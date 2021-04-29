@@ -11,11 +11,10 @@ const signupHandler = async (req, res) => {
         const {email, password} = req.body
         if (email && password) {
             try {
-                var user = new User({email, password})
-                await user.save()
+                var user = await User.create({email, password})
                 res.status(201).send(user)
             } catch (error) {
-                if (error.code === 11000) {
+                if (error.code == 11000) {
                     res.status(401).send({error: 'this email already exists'})
                 }
             }

@@ -11,7 +11,7 @@ const loginHandler = async (req, res) => {
     if (req.method === 'POST') {
         const {email, password} = req.body
         if (email && password) {
-            var user = User.findOne({email})
+            var user = await User.findOne({email})
             if (user && bcrypt.compareSync(password, user.password)) {
                 res.status(201).send(user)
             } else {
