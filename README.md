@@ -1,8 +1,29 @@
 # Voucher service
 Created for SWEN90016.
 
+## Requirements
+1. The system is identified as Voucher_Service
+2. The super admin user is hard coded to Tianyi. This user is referred to the Admin. The Admin has a pre-defined and system recognizable email username and a default initial password for login (you do not have to provide an interface to enter this). 
+3. The Admin user can add new services to the system by providing the type of the service, referred to as Voucher_Service_Type (see pdf)
+4. Customer(initially only the employees of NYD) can register in the system by providing the following Personal_Information: (see pdf)
+5. Customer can add separate Biller_Information at any time after registration: 
+  - Name on invoice
+  - Biller email address
+6. Customer can log into the system using their registered email address and password.
+7. Logged in Customer can update their Personal_Information and Biller_Information. 
+8. Logged in Customer can redeem their vouchers, by requesting a Voucher_Booking. (see pdf))
+9. When the Customer completes the Voucher_Booking, the system must send an email to the Admin with the following information regarding the booking (see pdf)
+10. When the Admin accepts the Voucher_Booking on behalf of the service provider,the system must send an email to the Customer with the following information regarding the booking (see pdf)
+11. Logged in Customer must be able to view or cancel their Voucher_Booking. If a Customer cancels a booking, an email must be sent to the Admin with information in requirement (9)-(a) & (b) and a booking cancellation message.
+12. Admin user must be able to view a list of all Voucher_Booking requests for all Voucher_Service_Types
+13. Admin, Customer, Personal_Information,Biller_Information,Voucher_Service_Typeand Voucher_Booking informationmust be persisted in the system (stored in a database).
+
+
+
+---
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
 
 ## Getting Started
 
