@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import NavButton from './NavButton';
+import { teal } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Poppins',
     fontSize: 18,
     fontWeight: 600,
-    paddingLeft: '10px'
+    paddingLeft: '10px',
+    color: '#f5eacf'
   },
   logoIcon: {
     flexGrow: 1,
@@ -47,7 +49,7 @@ export default function Header() {
           <Link href='/'>
               <a className={classes.logoIcon}>
                 <IconButton>
-                    <LoyaltyIcon></LoyaltyIcon>
+                    <LoyaltyIcon style={{ color: teal[500] }} />
                     <Typography variant="h6" className={classes.title}> Voucher Service </Typography>
                 </IconButton>
               </a>
