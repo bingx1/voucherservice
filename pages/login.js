@@ -13,7 +13,17 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Copyright from '../components/copyright';
+import {useTheme,createMuiTheme,MuiThemeProvider} from "@material-ui/core/styles";
 
+const theme = createMuiTheme({
+  overrides: {
+    MuiTypography: {
+      h5: {
+          fontFamily:'Roboto-Mono'
+        },
+      }
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -21,17 +31,22 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    backgroundColor:'#fafafa'
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#03DAC5',
+    height: '60px', 
+    width: '60px'
   },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+    fontFamily:'Roboto',
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    backgroundColor:'#6200EE',
   },
 }));
 
@@ -43,11 +58,13 @@ export default function SignIn() {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <LockOutlinedIcon fontSize="large" style={{ color: 'black' }}/>
         </Avatar>
+        <MuiThemeProvider theme={theme}>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign In
         </Typography>
+        </MuiThemeProvider>
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -71,30 +88,35 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
           />
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2" underline="always">
+                Forgot your password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="#" variant="body2" underline="always">
+                {"Don't have an account?"}
+              </Link>
+            </Grid>
+          </Grid>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+          <Grid container justify="center">
           <Button
             type="submit"
-            fullWidth
+            width ="50%"
+            height = "50%"
+            justify="center"
             variant="contained"
             color="primary"
             className={classes.submit}
+            style={{ borderRadius: 25 }}
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
           </Grid>
         </form>
       </div>
