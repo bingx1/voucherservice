@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Link from 'next/link'
 import NavButton from './NavButton'
+import { Button, Fab } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,9 +33,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     fontWeight: 600,
     fontFamily: ['Roboto Mono', 'monospace'],
-    backgroundColor: '#6200EE',
-    padding: '10px 20px 10px 20px',
-    borderRadius: 30
+    textTransform: 'capitalize'
   },
 
   buttons: {
@@ -54,11 +53,11 @@ export default function Header() {
       <AppBar position='static' className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
           <Link href='/'>
-            <a className={classes.logoIcon}>
+            <Fab variant='extended' color='primary'>
               <Typography variant='h6' className={classes.title}>
                 > Voucher_Service
               </Typography>
-            </a>
+            </Fab>
           </Link>
           <div className={classes.buttons}>
             <NavButton url='/signup' text='Sign Up' />

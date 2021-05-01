@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -57,6 +57,15 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles()
 
+  const [state, setState] = useState({
+    email: '',
+    password: ''
+  })
+
+  const handleChange = (e) => {
+    setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+  }
+
   return (
     <CenterForm>
       <Paper elevation={2} className={classes.paper}>
@@ -77,6 +86,8 @@ export default function SignIn() {
             name='email'
             autoComplete='email'
             autoFocus
+            onChange={handleChange}
+            value={state.email}
           />
           <TextField
             variant='outlined'
@@ -88,6 +99,8 @@ export default function SignIn() {
             type='password'
             id='password'
             autoComplete='current-password'
+            onChange={handleChange}
+            value={state.password}
           />
 
           <FormControlLabel

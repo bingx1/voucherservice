@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -52,6 +52,18 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles()
 
+  const [state, setState] = useState({
+    firstName: '',
+    lastName: '',
+    contact: '',
+    email: '',
+    password: ''
+  })
+
+  const handleChange = (e) => {
+    setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+  }
+
   return (
     <CenterForm>
       <Paper elevation={2} className={classes.paper}>
@@ -59,7 +71,7 @@ export default function SignUp() {
           <LockOutlinedIcon fontSize='large' style={{ color: 'black' }} />
         </Avatar>
         <Typography component='h1' variant='h5' className={classes.formTitle}>
-          Sign up
+          Sign Up
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -73,6 +85,8 @@ export default function SignUp() {
                 id='firstName'
                 label='First Name'
                 autoFocus
+                onChange={handleChange}
+                value={state.firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -84,6 +98,8 @@ export default function SignUp() {
                 label='Last Name'
                 name='lastName'
                 autoComplete='lname'
+                onChange={handleChange}
+                value={state.lastName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -94,6 +110,8 @@ export default function SignUp() {
                 id='contact'
                 label='Contact Number'
                 name='contact'
+                onChange={handleChange}
+                value={state.contact}
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,6 +123,8 @@ export default function SignUp() {
                 label='Email Address'
                 name='email'
                 autoComplete='email'
+                onChange={handleChange}
+                value={state.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -117,6 +137,8 @@ export default function SignUp() {
                 type='password'
                 id='password'
                 autoComplete='current-password'
+                onChange={handleChange}
+                value={state.password}
               />
             </Grid>
           </Grid>

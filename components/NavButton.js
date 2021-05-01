@@ -5,7 +5,10 @@ import Link from 'next/link'
 const useStyles = makeStyles(() => ({
   root: {
     textDecoration: 'none',
-    paddingRight: 10
+    paddingRight: 10,
+    '&:hover': {
+      textDecoration: 'underline'
+    }
   },
   buttonStyle: {
     variant: 'h2',

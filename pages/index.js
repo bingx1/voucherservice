@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import Copyright from '../components/copyright'
 import { makeStyles } from '@material-ui/core'
 
