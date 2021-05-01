@@ -55,7 +55,7 @@ export default function Header() {
           <Link href='/'>
             <Fab variant='extended' color='primary'>
               <Typography variant='h6' className={classes.title}>
-                > Voucher_Service
+                {'>'} Voucher_Service
               </Typography>
             </Fab>
           </Link>
