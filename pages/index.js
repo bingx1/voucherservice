@@ -7,6 +7,9 @@ export default function Home() {
       <Head>
         <title>Voucher Service</title>
         <link rel="icon" href="/favicon.ico" />
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap');
+        </style>
       </Head>
 
       <main className={styles.main}>
