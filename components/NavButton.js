@@ -1,27 +1,29 @@
-import { Button, makeStyles } from '@material-ui/core';
-import React from 'react';
-import Link from 'next/link';
+import { Button, makeStyles } from '@material-ui/core'
+import React from 'react'
+import Link from 'next/link'
 
 const useStyles = makeStyles(() => ({
   root: {
     textDecoration: 'none',
     paddingRight: 10,
+    '&:hover': {
+      textDecoration: 'underline'
+    }
   },
   buttonStyle: {
-    variant: 'h1',
-    color: '#f5eacf',
-    fontFamily: 'Poppins',
+    variant: 'h2',
+    fontFamily: ['Roboto Mono', 'monospace'],
     fontSize: 18,
-    fontWeight: 600,
+    fontWeight: 500,
     textTransform: 'none',
     boxShadow: 'none',
     backgroundColor: 0,
-    borderColor: 0,
-  },
-}));
+    borderColor: 0
+  }
+}))
 
 export default function NavButton(props) {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <div>
@@ -33,6 +35,5 @@ export default function NavButton(props) {
         </a>
       </Link>
     </div>
-  );
+  )
 }
-

@@ -1,67 +1,52 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Copyright from '../components/copyright'
+import { makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  main: {
+    padding: '5rem 0',
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    '@media (min-width:0px) and (orientation: landscape)': {
+      minHeight: `calc(100vh - ${theme.mixins.toolbar['@media (min-width:0px) and (orientation: landscape)'].minHeight}px)`
+    },
+    '@media (min-width:600px)': {
+      minHeight: `calc(100vh - ${theme.mixins.toolbar['@media (min-width:600px)'].minHeight}px)`
+    }
+  },
+  footer: {
+    width: '100%',
+    height: '100px',
+    borderTop: '1px solid #eaeaea',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& a': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  }
+}))
 
 export default function Home() {
+  const classes = useStyles()
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Voucher Service</title>
-        <link rel="icon" href="/favicon.ico" />
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap');
-        </style>
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Voucher Service
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
+    <div className={classes.container}>
+      <main className={classes.main}></main>
+      <footer className={classes.footer}>
+        <Copyright />
       </footer>
     </div>
   )
