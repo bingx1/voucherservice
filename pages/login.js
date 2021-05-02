@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { CenterForm } from '../components/center-form'
 import Link from 'next/link'
-import { Paper } from '@material-ui/core'
+import { FormHelperText, Paper } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,16 +54,46 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SignIn() {
+async function handleSubmit(e) {
+  e.preventDefault()
+}
+
+export default function LogIn() {
   const classes = useStyles()
 
   const [state, setState] = useState({
     email: '',
-    password: ''
+    password: '',
+    error: ''
   })
 
   const handleChange = (e) => {
     setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    const response = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Content-Type': 'application/json',
+        accept: 'application/json'
+      },
+      body: JSON.stringify({
+        email: state.email,
+        password: state.password
+      })
+    })
+
+    if (response.status === 201) {
+      window.location.href = '/'
+    } else {
+      const error = (await response.json()).error
+      setState((state) => ({ ...state, error }))
+    }
   }
 
   return (
@@ -75,7 +105,7 @@ export default function SignIn() {
         <Typography component='h1' variant='h5' className={classes.formTitle}>
           Log In
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant='outlined'
             margin='normal'
@@ -84,6 +114,7 @@ export default function SignIn() {
             id='email'
             label='Email Address'
             name='email'
+            type='email'
             autoComplete='email'
             autoFocus
             onChange={handleChange}
@@ -103,11 +134,12 @@ export default function SignIn() {
             value={state.password}
           />
 
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox value='remember' color='primary' />}
             label='Remember me'
             style={{ paddingTop: 10 }}
-          />
+          /> */}
+          <FormHelperText error>{state.error ? state.error : ' '}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'

@@ -12,7 +12,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { CenterForm } from '../components/center-form'
 import Link from 'next/link'
-import { Paper } from '@material-ui/core'
+import { FormHelperText, Paper } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+async function handleSubmit(e) {
+  e.preventDefault()
+}
+
 export default function SignUp() {
   const classes = useStyles()
 
@@ -57,11 +61,42 @@ export default function SignUp() {
     lastName: '',
     contact: '',
     email: '',
-    password: ''
+    password: '',
+    error: ''
   })
 
   const handleChange = (e) => {
-    setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+    let value = e.target.value
+    if (e.target.name == 'contact') value = value.replace(/[^0-9]+/g, '')
+    setState((state) => ({ ...state, [e.target.name]: value }))
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    const response = await fetch('/api/user/signup', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Content-Type': 'application/json',
+        accept: 'application/json'
+      },
+      body: JSON.stringify({
+        firstName: state.firstName,
+        lastName: state.lastName,
+        contact: state.contact,
+        email: state.email,
+        password: state.password
+      })
+    })
+
+    if (response.status === 201) {
+      window.location.href = '/'
+    } else {
+      const error = (await response.json()).error
+      setState((state) => ({ ...state, error: error }))
+    }
   }
 
   return (
@@ -73,7 +108,7 @@ export default function SignUp() {
         <Typography component='h1' variant='h5' className={classes.formTitle}>
           Sign Up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -110,6 +145,10 @@ export default function SignUp() {
                 id='contact'
                 label='Contact Number'
                 name='contact'
+                type='tel'
+                inputProps={{
+                  pattern: '[0-9]'
+                }}
                 onChange={handleChange}
                 value={state.contact}
               />
@@ -122,6 +161,7 @@ export default function SignUp() {
                 id='email'
                 label='Email Address'
                 name='email'
+                type='email'
                 autoComplete='email'
                 onChange={handleChange}
                 value={state.email}
@@ -142,6 +182,7 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
+          <FormHelperText error>{state.error ? state.error : ' '}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'
