@@ -22,8 +22,16 @@ var userSchema = new mongoose.Schema({
     required: true
   },
   contact: {
-    type: Number,
+    type: String,
     required: true
+  },
+  invoiceName: {
+    type: String,
+    required: false
+  },
+  billEmail: {
+    type: String,
+    required: false
   }
 })
 
@@ -38,6 +46,5 @@ userSchema.pre('save', function (next) {
 if (!mongoose.modelNames().includes('users')) {
   mongoose.model('users', userSchema)
 }
-mongoose.model('users').createIndexes()
 
 export default mongoose.model('users')

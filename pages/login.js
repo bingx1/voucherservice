@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { CenterForm } from '../components/center-form'
 import Link from 'next/link'
 import { FormHelperText, Paper } from '@material-ui/core'
+import { signIn } from 'next-auth/client'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,10 +55,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-async function handleSubmit(e) {
-  e.preventDefault()
-}
-
 export default function LogIn() {
   const classes = useStyles()
 
@@ -73,27 +70,7 @@ export default function LogIn() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-
-    const response = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-        'Content-Type': 'application/json',
-        accept: 'application/json'
-      },
-      body: JSON.stringify({
-        email: state.email,
-        password: state.password
-      })
-    })
-
-    if (response.status === 201) {
-      window.location.href = '/'
-    } else {
-      const error = (await response.json()).error
-      setState((state) => ({ ...state, error }))
-    }
+    signIn('credentials', {email: state.email, password: state.password, callbackUrl: '/'})
   }
 
   return (

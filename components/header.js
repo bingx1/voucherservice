@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import Link from 'next/link'
 import NavButton from './NavButton'
 import { Button, Fab } from '@material-ui/core'
+import { useSession, signOut } from 'next-auth/client'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles()
+  const [ session, loading ] = useSession()
 
   return (
     <div className={classes.root}>
@@ -60,8 +62,12 @@ export default function Header() {
             </Fab>
           </Link>
           <div className={classes.buttons}>
+            {!session ? <>
             <NavButton url='/signup' text='Sign Up' />
             <NavButton url='/login' text='Log In' />
+            </>
+            : <Button onClick={() => signOut()}>Sign out</Button>
+            }
           </div>
         </Toolbar>
       </AppBar>

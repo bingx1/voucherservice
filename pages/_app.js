@@ -1,3 +1,4 @@
+import { Provider } from 'next-auth/client'
 import Header from '../components/header'
 import { ThemeProvider } from '@material-ui/core'
 import { theme } from '../styles/theme'
@@ -6,7 +7,7 @@ import Head from 'next/head'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <>
+    <Provider session={pageProps.session}>
       <Head>
         <title>Voucher_Service</title>
         <link rel='icon' href='/favicon.ico' />
@@ -22,7 +23,7 @@ function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </div>
       </ThemeProvider>
-    </>
+    </Provider>
   )
 }
 

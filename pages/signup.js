@@ -13,6 +13,7 @@ import Container from '@material-ui/core/Container'
 import { CenterForm } from '../components/center-form'
 import Link from 'next/link'
 import { FormHelperText, Paper } from '@material-ui/core'
+import { signIn } from 'next-auth/client'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -48,10 +49,6 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
-
-async function handleSubmit(e) {
-  e.preventDefault()
-}
 
 export default function SignUp() {
   const classes = useStyles()
@@ -92,7 +89,7 @@ export default function SignUp() {
     })
 
     if (response.status === 201) {
-      window.location.href = '/'
+      signIn('credentials', {email: state.email, password: state.password, callbackUrl: '/'})
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))
