@@ -24,6 +24,12 @@ var userSchema = new mongoose.Schema({
   contact: {
     type: Number,
     required: true
+  },
+  billerName: {
+    type: String
+  },
+  billerEmail: {
+    type: String
   }
 })
 

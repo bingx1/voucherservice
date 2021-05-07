@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Link from 'next/link'
-import NavButton from './NavButton'
-import { Button, Fab } from '@material-ui/core'
+import NavButton from './nav-button'
+import { Button, Fab, IconButton } from '@material-ui/core'
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
+import ExitToAppOutlined from '@material-ui/icons/ExitToAppOutlined'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,11 +44,20 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.only('xs')]: {
       display: 'none'
     }
+  },
+  icon: {
+    marginLeft: 10,
+    border: 'white 3px solid'
   }
 }))
 
 export default function Header() {
+  const [loggedInEmail, setloggedInEmail] = useState(null)
   const classes = useStyles()
+
+  useEffect(() => {
+    setloggedInEmail(localStorage.getItem('vs-email') || null)
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -59,10 +70,31 @@ export default function Header() {
               </Typography>
             </Fab>
           </Link>
-          <div className={classes.buttons}>
-            <NavButton url='/signup' text='Sign Up' />
-            <NavButton url='/login' text='Log In' />
-          </div>
+          {!loggedInEmail ? (
+            <div className={classes.buttons}>
+              <NavButton url='/signup' text='Sign Up' />
+              <NavButton url='/login' text='Log In' />
+            </div>
+          ) : (
+            <div className={classes.buttons}>
+              <Link href='/user'>
+                <IconButton color='inherit' size='small' className={classes.icon}>
+                  <PersonOutlineOutlinedIcon />
+                </IconButton>
+              </Link>
+              <IconButton
+                color='inherit'
+                onClick={() => {
+                  window.localStorage.removeItem('vs-email')
+                  window.location.href = '/'
+                }}
+                size='small'
+                className={classes.icon}
+              >
+                <ExitToAppOutlined />
+              </IconButton>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </div>

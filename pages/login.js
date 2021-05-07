@@ -8,9 +8,10 @@ import Grid from '@material-ui/core/Grid'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import { CenterForm } from '../components/center-form'
+import CenterForm from '../components/center-form'
 import Link from 'next/link'
-import { FormHelperText, Paper } from '@material-ui/core'
+import { FormHelperText, IconButton, InputAdornment, Paper } from '@material-ui/core'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -64,7 +65,8 @@ export default function LogIn() {
   const [state, setState] = useState({
     email: '',
     password: '',
-    error: ''
+    error: '',
+    showPassword: false
   })
 
   const handleChange = (e) => {
@@ -89,11 +91,20 @@ export default function LogIn() {
     })
 
     if (response.status === 201) {
+      localStorage.setItem('vs-email', state.email)
       window.location.href = '/'
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error }))
     }
+  }
+
+  const handleClickShowPassword = () => {
+    setState({ ...state, showPassword: !state.showPassword })
+  }
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault()
   }
 
   return (
@@ -127,11 +138,24 @@ export default function LogIn() {
             fullWidth
             name='password'
             label='Password'
-            type='password'
             id='password'
             autoComplete='current-password'
             onChange={handleChange}
             value={state.password}
+            type={state.showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    aria-label='toggle password visibility'
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {state.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
           />
 
           {/* <FormControlLabel
