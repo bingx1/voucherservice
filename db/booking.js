@@ -1,8 +1,15 @@
 import mongoose from 'mongoose'
 
 var bookingSchema = new mongoose.Schema({
+  customer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
+    required: true
+  },
+
   serviceType: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'services',
     required: true
   },
 
@@ -23,12 +30,16 @@ var bookingSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now()
+  },
+
+  canceled: {
+    type: Boolean,
+    default: false
   }
 })
 
 if (!mongoose.modelNames().includes('bookings')) {
   mongoose.model('bookings', bookingSchema)
-  mongoose.model('bookings').createIndexes()
 }
 
 export default mongoose.model('bookings')

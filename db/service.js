@@ -10,7 +10,6 @@ var serviceSchema = new mongoose.Schema({
 
 if (!mongoose.modelNames().includes('services')) {
   mongoose.model('services', serviceSchema)
-  mongoose.model('services').createIndexes()
 }
 
 export default mongoose.model('services')
