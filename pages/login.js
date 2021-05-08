@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
-import Avatar from '@material-ui/core/Avatar'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import Grid from '@material-ui/core/Grid'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import CenterForm from '../components/center-form'
 import Link from 'next/link'
 import { signIn } from 'next-auth/client'
-import { FormHelperText, IconButton, InputAdornment, Paper } from '@material-ui/core'
+import {
+  makeStyles,
+  Avatar,
+  Button,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Grid,
+  Typography,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  Paper
+} from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
+import CenterForm from '../components/center-form'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -72,7 +77,30 @@ export default function LogIn() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    signIn('credentials', {email: state.email, password: state.password, callbackUrl: '/'})
+
+    const response = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Content-Type': 'application/json',
+        accept: 'application/json'
+      },
+      body: JSON.stringify({
+        email: state.email,
+        password: state.password
+      })
+    })
+
+    if (response.status === 201) {
+      const user = await response.json()
+      if (user.isAdmin) window.localStorage.setItem('vs-admin', true)
+
+      signIn('credentials', { email: state.email, password: state.password, callbackUrl: '/' })
+    } else {
+      const error = (await response.json()).error
+      setState((state) => ({ ...state, error }))
+    }
   }
 
   const handleClickShowPassword = () => {

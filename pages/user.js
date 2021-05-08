@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, Button, Typography, makeStyles, Box, Paper } from '@material-ui/core'
 import Link from 'next/link'
+import { getSession } from 'next-auth/client'
 import CenterBox from '../components/center-box'
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +40,12 @@ export default function User() {
   const classes = useStyles()
 
   useEffect(() => {
-    async function getUser() {
+    async function getSessionEmail() {
+      const session = await getSession()
+      return session.user.email
+    }
+
+    async function getUser(email) {
       const response = await fetch('/api/user/view', {
         method: 'POST',
         headers: {
@@ -49,15 +55,17 @@ export default function User() {
           accept: 'application/json'
         },
         body: JSON.stringify({
-          email: window.localStorage.getItem('vs-email')
+          email
         })
       })
       const data = await response.json()
       return data
     }
 
-    getUser().then(({ firstName, lastName, email }) => {
-      setState((state) => ({ ...state, loading: false, firstName, lastName, email }))
+    getSessionEmail().then((userEmail) => {
+      getUser(userEmail).then(({ firstName, lastName, email }) => {
+        setState((state) => ({ ...state, loading: false, firstName, lastName, email }))
+      })
     })
   }, [])
 

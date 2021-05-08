@@ -1,5 +1,5 @@
-import { makeStyles, Tooltip } from '@material-ui/core'
 import React from 'react'
+import { makeStyles, Tooltip } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   arrow: {
@@ -11,7 +11,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function StyledTooltip(props) {
+const StyledTooltip = React.forwardRef((props, ref) => {
   const classes = useStyles()
-  return <Tooltip classes={classes} {...props} />
-}
+  return (
+    <Tooltip ref={ref} classes={classes} {...props}>
+      {props.children}
+    </Tooltip>
+  )
+})
+
+export default StyledTooltip

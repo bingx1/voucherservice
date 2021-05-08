@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { makeStyles } from '@material-ui/core/styles'
+import {} from '@material-ui/core/styles'
 import CenterForm from '../components/center-form'
 import Link from 'next/link'
 import {
+  makeStyles,
   Avatar,
   Button,
   TextField,
@@ -13,8 +14,6 @@ import {
   IconButton,
   InputAdornment,
   Paper
-  // FormControlLabel,
-  // Switch
 } from '@material-ui/core'
 import { signIn } from 'next-auth/client'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
@@ -100,7 +99,10 @@ export default function SignUp() {
     })
 
     if (response.status === 201) {
-      signIn('credentials', {email: state.email, password: state.password, callbackUrl: '/'})
+      // const user = await response.json()
+
+      // if (user.isAdmin) window.localStorage.setItem('vs-admin', true)
+      signIn('credentials', { email: state.email, password: state.password, callbackUrl: '/' })
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))

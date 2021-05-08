@@ -14,9 +14,13 @@ const viewHandler = async (req, res) => {
       if (user) {
         res.status(201).send(user)
       } else {
-        res.status(401).send('User does not exist')
+        res.status(401).send('An account with that email does not exist')
       }
+    } else {
+      res.status(422).send({ error: 'All required fields must be filled' })
     }
+  } else {
+    res.status(422).send({ error: 'Request method not supported' })
   }
 }
 

@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Button,
@@ -15,8 +16,7 @@ import {
   ListItem
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
-import React, { useState } from 'react'
-import { useEffect } from 'react'
+import { getSession, signOut } from 'next-auth/client'
 import CenterBox from '../components/center-box'
 
 const useStyles = makeStyles((theme) => ({
@@ -83,6 +83,8 @@ const EditInfo = () => {
   }
 
   async function handleSave() {
+    const sessionEmail = (await getSession()).user.email
+
     const response = await fetch('/api/user/edit', {
       method: 'PATCH',
       headers: {
@@ -95,7 +97,7 @@ const EditInfo = () => {
         firstName: state.firstName,
         lastName: state.lastName,
         contact: state.contact,
-        currentEmail: window.localStorage.getItem('vs-email'),
+        currentEmail: sessionEmail,
         newEmail: state.email,
         invoiceName: state.invoiceName,
         billEmail: state.billEmail
@@ -103,8 +105,8 @@ const EditInfo = () => {
     })
 
     if (response.status === 201) {
-      window.localStorage.setItem('vs-email', state.email)
       setState((state) => ({ ...state, success: 'Profile successfully updated' }))
+      signOut({ callbackUrl: '/' })
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))
@@ -123,7 +125,12 @@ const EditInfo = () => {
   }
 
   useEffect(() => {
-    async function getUser() {
+    async function getSessionEmail() {
+      const session = await getSession()
+      return session.user.email
+    }
+
+    async function getUser(email) {
       const response = await fetch('/api/user/view', {
         method: 'POST',
         headers: {
@@ -133,23 +140,25 @@ const EditInfo = () => {
           accept: 'application/json'
         },
         body: JSON.stringify({
-          email: window.localStorage.getItem('vs-email')
+          email
         })
       })
       const data = await response.json()
       return data
     }
 
-    getUser().then(({ firstName, lastName, contact, email, invoiceName, billEmail }) => {
-      setState((state) => ({
-        ...state,
-        firstName,
-        lastName,
-        contact,
-        email,
-        invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
-        billEmail: billEmail ? billEmail : email
-      }))
+    getSessionEmail().then((userEmail) => {
+      getUser(userEmail).then(({ firstName, lastName, contact, email, invoiceName, billEmail }) => {
+        setState((state) => ({
+          ...state,
+          firstName,
+          lastName,
+          contact,
+          email,
+          invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
+          billEmail: billEmail ? billEmail : email
+        }))
+      })
     })
   }, [])
 
@@ -256,7 +265,7 @@ const EditInfo = () => {
 
                 {/* --------------------------- NEW PASSWORD FIELD --------------------------- */}
 
-                <Grid item xs={8} md={9}>
+                <Grid item xs={12} sm={8} md={9}>
                   <TextField
                     variant='outlined'
                     margin='normal'
@@ -286,7 +295,7 @@ const EditInfo = () => {
 
                 {/* ------------------------- CHANGE PASSWORD BUTTON ------------------------- */}
 
-                <Grid item container xs={4} md={3} justify='flex-end'>
+                <Grid item container xs={12} sm={4} md={3} justify='center'>
                   <Button
                     onClick={handleChangePassword}
                     variant='contained'

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import Link from 'next/link'
-import { Button, Fab } from '@material-ui/core'
 import { useSession, signOut } from 'next-auth/client'
 import NavButton from './nav-button'
-import { Button, Fab, IconButton } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Button, Fab, IconButton, makeStyles } from '@material-ui/core'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined'
 import ExitToAppOutlined from '@material-ui/icons/ExitToAppOutlined'
@@ -58,10 +53,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false)
   const classes = useStyles()
-  const [ session, loading ] = useSession()
+  const [session, loading] = useSession()
 
-    setloggedInEmail(window.localStorage.getItem('vs-email') || null)
   useEffect(() => {
+    setIsAdmin(window.localStorage.getItem('vs-admin') === 'true')
   }, [])
   return (
     <div className={classes.root}>
@@ -75,26 +70,25 @@ export default function Header() {
             </Fab>
           </Link>
           {!session ? (
-            <div className={classes.buttons}>
+            <div className={classes.nav}>
               <NavButton url='/signup' text='Sign Up' />
               <NavButton url='/login' text='Log In' />
             </div>
           ) : (
             <div className={classes.nav}>
-              <StyledTooltip title={isAdmin ? 'Admin' : 'User'}>
-                <Link href={isAdmin ? '/admin' : '/user'}>
+              <Link href={isAdmin ? '/admin' : '/user'}>
+                <StyledTooltip title={isAdmin ? 'Admin' : 'User'}>
                   <IconButton color='inherit' size='small' className={classes.icon}>
                     {isAdmin ? <PeopleAltOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
                   </IconButton>
-                </Link>
-              </StyledTooltip>
+                </StyledTooltip>
+              </Link>
               <StyledTooltip title='Log Out'>
                 <IconButton
                   color='inherit'
                   onClick={() => {
-                    window.localStorage.removeItem('vs-email')
                     window.localStorage.removeItem('vs-admin')
-                    window.location.href = '/'
+                    signOut()
                   }}
                   size='small'
                   className={classes.icon}

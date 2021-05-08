@@ -1,11 +1,16 @@
 import mongoose from 'mongoose'
+import './user'
 
-if (!mongoose.connections[0].readyState) {
-    mongoose.connect(process.env.DB_URL, {
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useNewUrlParser: true
-    })
+const connectDB = (handler) => async (req, res) => {
+  if (mongoose.connections[0].readyState) {
+    return handler(req, res)
+  }
+  await mongoose.connect(process.env.DB_URL, {
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useNewUrlParser: true
+  })
+  return handler(req, res)
 }
 
-import './user'
+export default connectDB
