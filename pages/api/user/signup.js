@@ -1,4 +1,4 @@
-import connectDB from '../../../db/connection'
+import '../../../db/connection'
 import User from '../../../db/user'
 
 /**
@@ -26,4 +26,4 @@ const signupHandler = async (req, res) => {
   }
 }
 
-export default connectDB(signupHandler)
+export default signupHandler

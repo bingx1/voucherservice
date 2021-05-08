@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import CenterForm from '../components/center-form'
 import Link from 'next/link'
+import { signIn } from 'next-auth/client'
 import { FormHelperText, IconButton, InputAdornment, Paper } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 
@@ -49,10 +50,6 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
-
-async function handleSubmit(e) {
-  e.preventDefault()
-}
 
 export default function SignUp() {
   const classes = useStyles()
@@ -94,8 +91,7 @@ export default function SignUp() {
     })
 
     if (response.status === 201) {
-      localStorage.setItem('vs-email', state.email)
-      window.location.href = '/'
+      signIn('credentials', {email: state.email, password: state.password, callbackUrl: '/'})
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))

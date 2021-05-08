@@ -4,6 +4,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Link from 'next/link'
+import { Button, Fab } from '@material-ui/core'
+import { useSession, signOut } from 'next-auth/client'
 import NavButton from './nav-button'
 import { Button, Fab, IconButton } from '@material-ui/core'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
@@ -52,12 +54,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Header() {
-  const [loggedInEmail, setloggedInEmail] = useState(null)
   const classes = useStyles()
-
-  useEffect(() => {
-    setloggedInEmail(localStorage.getItem('vs-email') || null)
-  }, [])
+  const [ session, loading ] = useSession()
 
   return (
     <div className={classes.root}>
@@ -70,7 +68,7 @@ export default function Header() {
               </Typography>
             </Fab>
           </Link>
-          {!loggedInEmail ? (
+          {!session ? (
             <div className={classes.buttons}>
               <NavButton url='/signup' text='Sign Up' />
               <NavButton url='/login' text='Log In' />
