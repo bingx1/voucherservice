@@ -45,6 +45,7 @@ userSchema.pre('save', function (next) {
 
 if (!mongoose.modelNames().includes('users')) {
   mongoose.model('users', userSchema)
+  mongoose.model('users').createIndexes()
 }
 
 export default mongoose.model('users')

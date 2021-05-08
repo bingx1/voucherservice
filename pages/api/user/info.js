@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/client'
-import connectDB from '../../../db/connection'
+import '../../../db/connection'
 import User from '../../../db/user'
 
 const infoHandler = async (req, res) => {
@@ -35,4 +35,4 @@ const infoHandler = async (req, res) => {
   }
 }
 
-export default connectDB(infoHandler)
+export default infoHandler

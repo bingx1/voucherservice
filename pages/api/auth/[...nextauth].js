@@ -2,14 +2,13 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import bcrypt from 'bcrypt'
 import User from '../../../db/user'
-import connectDB from '../../../db/connection'
+import '../../../db/connection'
 
 export default NextAuth({
     providers: [
         Providers.Credentials({
             name: 'credentials',
             async authorize(credentials) {
-                connectDB()
                 const { email, password } = credentials
                 if (email && password) {
                     var user = await User.findOne({ email })
