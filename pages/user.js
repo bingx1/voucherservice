@@ -82,7 +82,7 @@ export default function User() {
             {state.email}
           </Typography>
           <Grid container justify='center'>
-            <Link href='/edit-info'>
+            <Link href='/info'>
               <Button
                 type='submit'
                 width='50%'
