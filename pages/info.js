@@ -83,10 +83,11 @@ const EditInfo = () => {
   }
 
   async function handleSave() {
-    const sessionEmail = (await getSession()).user.email
+    const session = await getSession()
+    const sessionEmail = session.user.email
 
-    const response = await fetch('/api/user/edit', {
-      method: 'PATCH',
+    const response = await fetch('/api/user/info', {
+      method: 'POST',
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
@@ -97,16 +98,17 @@ const EditInfo = () => {
         firstName: state.firstName,
         lastName: state.lastName,
         contact: state.contact,
-        currentEmail: sessionEmail,
-        newEmail: state.email,
+        email: state.email,
         invoiceName: state.invoiceName,
         billEmail: state.billEmail
       })
     })
 
     if (response.status === 201) {
+      const user = await response.json()
+
       setState((state) => ({ ...state, success: 'Profile successfully updated' }))
-      signOut({ callbackUrl: '/' })
+      if (sessionEmail !== user.email) signOut({ callbackUrl: '/' })
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))
@@ -125,40 +127,30 @@ const EditInfo = () => {
   }
 
   useEffect(() => {
-    async function getSessionEmail() {
-      const session = await getSession()
-      return session.user.email
-    }
-
-    async function getUser(email) {
-      const response = await fetch('/api/user/view', {
-        method: 'POST',
+    async function getUser() {
+      const response = await fetch('/api/user/info', {
+        method: 'GET',
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
           'Content-Type': 'application/json',
           accept: 'application/json'
-        },
-        body: JSON.stringify({
-          email
-        })
+        }
       })
       const data = await response.json()
       return data
     }
 
-    getSessionEmail().then((userEmail) => {
-      getUser(userEmail).then(({ firstName, lastName, contact, email, invoiceName, billEmail }) => {
-        setState((state) => ({
-          ...state,
-          firstName,
-          lastName,
-          contact,
-          email,
-          invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
-          billEmail: billEmail ? billEmail : email
-        }))
-      })
+    getUser().then(({ firstName, lastName, contact, email, invoiceName, billEmail }) => {
+      setState((state) => ({
+        ...state,
+        firstName,
+        lastName,
+        contact,
+        email,
+        invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
+        billEmail: billEmail ? billEmail : email
+      }))
     })
   }, [])
 

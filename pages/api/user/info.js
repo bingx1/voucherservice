@@ -9,27 +9,36 @@ const infoHandler = async (req, res) => {
     return
   }
 
-  var user = await User.findOne({ email: session.user.email })
+  const sessionEmail = session.user.email
+
+  var user = await User.findOne({ email: sessionEmail })
 
   if (user) {
     if (req.method === 'POST') {
-      const { firstName, lastName, contact, invoiceName, billEmail } = req.body
-      if (firstName) {
+      const { firstName, lastName, contact, email, invoiceName, billEmail } = req.body
+
+      if (firstName && lastName && contact && email && invoiceName && billEmail) {
+        const emailAlreadyExists = await User.findOne({ email })
+
+        if (emailAlreadyExists && email.trim() !== sessionEmail.trim()) {
+          res.status(401).send({
+            error: 'An account with this email already exists. Please use another email address.'
+          })
+          return
+        }
+
         user.firstName = firstName
-      }
-      if (lastName) {
         user.lastName = lastName
-      }
-      if (contact) {
         user.contact = contact
-      }
-      if (invoiceName) {
         user.invoiceName = invoiceName
-      }
-      if (billEmail) {
         user.billEmail = billEmail
+        await user.save()
+      } else {
+        res.status(401).send({
+          error: 'All information fields must be filled.'
+        })
+        return
       }
-      await user.save()
     }
     res.status(201).send(user)
   } else {
