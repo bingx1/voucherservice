@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
-import Avatar from '@material-ui/core/Avatar'
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
 import CenterForm from '../components/center-form'
 import Link from 'next/link'
+import {
+  Avatar,
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  Paper
+  // FormControlLabel,
+  // Switch
+} from '@material-ui/core'
 import { signIn } from 'next-auth/client'
-import { FormHelperText, IconButton, InputAdornment, Paper } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
@@ -61,13 +64,18 @@ export default function SignUp() {
     email: '',
     password: '',
     error: '',
-    showPassword: false
+    showPassword: false,
+    isAdmin: false
   })
 
   const handleChange = (e) => {
     let value = e.target.value
     if (e.target.name == 'contact') value = value.replace(/[^0-9]+/g, '')
     setState((state) => ({ ...state, [e.target.name]: value }))
+  }
+
+  const handleSwitchChange = (e) => {
+    setState((state) => ({ ...state, [e.target.name]: e.target.checked }))
   }
 
   async function handleSubmit(e) {
@@ -86,7 +94,8 @@ export default function SignUp() {
         lastName: state.lastName,
         contact: state.contact,
         email: state.email,
-        password: state.password
+        password: state.password,
+        isAdmin: state.isAdmin
       })
     })
 
@@ -202,6 +211,12 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
+          {/* <FormControlLabel
+            control={
+              <Switch checked={state.isAdmin} onChange={handleSwitchChange} name='isAdmin' />
+            }
+            label='Admin'
+          /> */}
           <FormHelperText error>{state.error ? state.error : ' '}</FormHelperText>
           <Grid container justify='center'>
             <Button

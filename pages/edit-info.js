@@ -64,8 +64,8 @@ const EditInfo = () => {
     contact: '',
     email: '',
     password: '',
-    billerName: '',
-    billerEmail: '',
+    invoiceName: '',
+    billEmail: '',
     error: '',
     success: '',
     showPassword: false,
@@ -97,13 +97,13 @@ const EditInfo = () => {
         contact: state.contact,
         currentEmail: window.localStorage.getItem('vs-email'),
         newEmail: state.email,
-        billerName: state.billerName,
-        billerEmail: state.billerEmail
+        invoiceName: state.invoiceName,
+        billEmail: state.billEmail
       })
     })
 
     if (response.status === 201) {
-      localStorage.setItem('vs-email', state.email)
+      window.localStorage.setItem('vs-email', state.email)
       setState((state) => ({ ...state, success: 'Profile successfully updated' }))
     } else {
       const error = (await response.json()).error
@@ -140,15 +140,15 @@ const EditInfo = () => {
       return data
     }
 
-    getUser().then(({ firstName, lastName, contact, email, billerName, billerEmail }) => {
+    getUser().then(({ firstName, lastName, contact, email, invoiceName, billEmail }) => {
       setState((state) => ({
         ...state,
         firstName,
         lastName,
         contact,
         email,
-        billerName: billerName ? billerName : firstName + ' ' + lastName,
-        billerEmail: billerEmail ? billerEmail : email
+        invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
+        billEmail: billEmail ? billEmail : email
       }))
     })
   }, [])
@@ -342,11 +342,11 @@ const EditInfo = () => {
                 <TextField
                   variant='outlined'
                   fullWidth
-                  id='billerName'
-                  name='billerName'
+                  id='invoiceName'
+                  name='invoiceName'
                   type='text'
                   onChange={handleChange}
-                  value={state.billerName}
+                  value={state.invoiceName}
                 />
               </Grid>
 
@@ -357,12 +357,12 @@ const EditInfo = () => {
                 <TextField
                   variant='outlined'
                   fullWidth
-                  id='billerEmail'
-                  name='billerEmail'
+                  id='billEmail'
+                  name='billEmail'
                   type='email'
                   autoComplete='email'
                   onChange={handleChange}
-                  value={state.billerEmail}
+                  value={state.billEmail}
                 />
               </Grid>
 

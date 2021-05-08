@@ -8,10 +8,10 @@ import User from '../../../db/user'
  */
 const signupHandler = async (req, res) => {
   if (req.method === 'POST') {
-    const { firstName, lastName, contact, email, password } = req.body
+    const { firstName, lastName, contact, email, password, isAdmin } = req.body
     if (firstName && lastName && contact && email && password) {
       try {
-        var user = await User.create({ firstName, lastName, contact, email, password })
+        var user = await User.create({ firstName, lastName, contact, email, password, isAdmin })
         res.status(201).send(user)
       } catch (error) {
         if (error.code == 11000) {

@@ -9,7 +9,9 @@ import { useSession, signOut } from 'next-auth/client'
 import NavButton from './nav-button'
 import { Button, Fab, IconButton } from '@material-ui/core'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
+import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined'
 import ExitToAppOutlined from '@material-ui/icons/ExitToAppOutlined'
+import StyledTooltip from './styled-tooltip'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize'
   },
 
-  buttons: {
+  nav: {
     display: 'flex',
     justifyContent: 'space-around',
     [theme.breakpoints.only('xs')]: {
@@ -54,9 +56,13 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Header() {
+  const [isAdmin, setIsAdmin] = useState(false)
   const classes = useStyles()
   const [ session, loading ] = useSession()
 
+    setloggedInEmail(window.localStorage.getItem('vs-email') || null)
+  useEffect(() => {
+  }, [])
   return (
     <div className={classes.root}>
       <AppBar position='static' className={classes.appBar}>
@@ -74,23 +80,28 @@ export default function Header() {
               <NavButton url='/login' text='Log In' />
             </div>
           ) : (
-            <div className={classes.buttons}>
-              <Link href='/user'>
-                <IconButton color='inherit' size='small' className={classes.icon}>
-                  <PersonOutlineOutlinedIcon />
+            <div className={classes.nav}>
+              <StyledTooltip title={isAdmin ? 'Admin' : 'User'}>
+                <Link href={isAdmin ? '/admin' : '/user'}>
+                  <IconButton color='inherit' size='small' className={classes.icon}>
+                    {isAdmin ? <PeopleAltOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
+                  </IconButton>
+                </Link>
+              </StyledTooltip>
+              <StyledTooltip title='Log Out'>
+                <IconButton
+                  color='inherit'
+                  onClick={() => {
+                    window.localStorage.removeItem('vs-email')
+                    window.localStorage.removeItem('vs-admin')
+                    window.location.href = '/'
+                  }}
+                  size='small'
+                  className={classes.icon}
+                >
+                  <ExitToAppOutlined />
                 </IconButton>
-              </Link>
-              <IconButton
-                color='inherit'
-                onClick={() => {
-                  window.localStorage.removeItem('vs-email')
-                  window.location.href = '/'
-                }}
-                size='small'
-                className={classes.icon}
-              >
-                <ExitToAppOutlined />
-              </IconButton>
+              </StyledTooltip>
             </div>
           )}
         </Toolbar>

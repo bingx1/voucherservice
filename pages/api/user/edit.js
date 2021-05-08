@@ -14,10 +14,10 @@ const editHandler = async (req, res) => {
       contact,
       currentEmail,
       newEmail,
-      billerName,
-      billerEmail
+      invoiceName,
+      billEmail
     } = req.body
-    if (firstName && lastName && contact && currentEmail && newEmail && billerName && billerEmail) {
+    if (firstName && lastName && contact && currentEmail && newEmail && invoiceName && billEmail) {
       var newEmailAlreadyTaken = await User.findOne({ email: newEmail })
 
       if (currentEmail !== newEmail && newEmailAlreadyTaken) {
@@ -25,7 +25,7 @@ const editHandler = async (req, res) => {
       } else {
         var user = await User.findOneAndUpdate(
           { email: currentEmail },
-          { firstName, lastName, contact, email: newEmail, billerName, billerEmail }
+          { firstName, lastName, contact, email: newEmail, invoiceName, billEmail }
         )
         res.status(201).send(user)
       }

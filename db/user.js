@@ -6,7 +6,8 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: true,
     index: true,
-    unique: true
+    unique: true,
+    trim: true
   },
   password: {
     type: String,
@@ -15,23 +16,30 @@ var userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   contact: {
-    type: String,
-    required: true
+    type: Number,
+    required: true,
+    trim: true
   },
   invoiceName: {
     type: String,
-    required: false
+    trim: true
   },
   billEmail: {
     type: String,
-    required: false
+    trim: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 

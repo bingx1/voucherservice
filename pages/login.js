@@ -134,11 +134,6 @@ export default function LogIn() {
             }}
           />
 
-          {/* <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
-            style={{ paddingTop: 10 }}
-          /> */}
           <FormHelperText error>{state.error ? state.error : ' '}</FormHelperText>
           <Grid container justify='center'>
             <Button
