@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core'
 import CenterForm from '../components/center-form'
 
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: 20,
@@ -60,35 +59,76 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-
-export default function Admin() {
+export default function addservice() {
   const classes = useStyles()
 
+  const [state, setState] = useState({
+    name: ''
+  })
+
+  const handleChange = (e) => {
+    let value = e.target.value
+    setState((state) => ({ ...state, [e.target.name]: value }))
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    const response = await fetch('/api/admin/addservice', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Content-Type': 'application/json',
+        accept: 'application/json'
+      },
+      body: JSON.stringify({
+        name: state.name
+      })
+    })
+
+    if (response.status === 201) {
+      const service = await response.json()
+    } else {
+      const error = (await response.json()).error
+      setState((state) => ({ ...state, error: error }))
+    }
+  }
   return (
     <CenterForm>
       <Paper elevation={2} className={classes.paper}>
         <Typography component='h1' variant='h5' className={classes.formTitle}>
-          Services
+          Add Services
         </Typography>
-        <p>
-
-        </p>
-
-        <Link href='/addservice'>
-        <Button
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
+          <TextField
+            variant='outlined'
+            margin='normal'
+            required
+            fullWidth
+            id='name'
+            label='New Service'
+            name='name'
+            autoComplete='nservice'
+            autoFocus
+            onChange={handleChange}
+            value={state.name}
+          />
+          <Grid container justify='center'>
+            <Button
               type='submit'
               width='50%'
               height='50%'
-              justify='center'
               variant='contained'
               color='primary'
               className={classes.submit}
               style={{ borderRadius: 25 }}
             >
-              Add Services
-          </Button>
-          </Link>
-        </Paper>
-      </CenterForm>
+              Add
+            </Button>
+          </Grid>
+        </form>
+      </Paper>
+    </CenterForm>
   )
 }
