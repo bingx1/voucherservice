@@ -102,7 +102,8 @@ export default function SignUp() {
       // const user = await response.json()
 
       // if (user.isAdmin) window.localStorage.setItem('vs-admin', true)
-      signIn('credentials', { email: state.email, password: state.password, callbackUrl: '/' })
+      signIn('credentials', { email: state.email, password: state.password, redirect: false })
+      window.location.href = '/'
     } else {
       const error = (await response.json()).error
       setState((state) => ({ ...state, error: error }))

@@ -2,7 +2,6 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import bcrypt from 'bcryptjs'
 import User from '../../../db/user'
-import '../../../db/connection'
 
 export default NextAuth({
     providers: [
@@ -26,6 +25,18 @@ export default NextAuth({
     },
     pages: {
         signIn: 'login'
+    },
+    callbacks: {
+        async jwt(token, user, account, profile, isNewUser) {
+            if (user) {
+                token = {...token, isAdmin: user.isAdmin}
+            }
+            return token
+        },
+        async session(session, token) {
+            session = {...session, isAdmin: token.isAdmin}
+            return session
+        }
     },
     debug: false
 })

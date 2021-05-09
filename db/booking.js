@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import './connection'
 
 var bookingSchema = new mongoose.Schema({
   customer: {

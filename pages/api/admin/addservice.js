@@ -1,7 +1,12 @@
-import '../../../db/connection'
+import { getToken } from 'next-auth/jwt'
 import Service from '../../../db/service'
 
 const addServiceHandler = async (req, res) => {
+  const token = await getToken({ req, secret: process.env.SECRET })
+  if (!token || !token.isAdmin) {
+    res.status(401).send({error: 'Admin access only'})
+    return
+  }
   if (req.method === 'POST') {
     const { name } = req.body
     if (name) {
@@ -10,7 +15,7 @@ const addServiceHandler = async (req, res) => {
         res.status(201).send(service)
       } catch (error) {
         if (error.code == 11000) {
-          res.status(401).send({ error: 'This service already exists' })
+          res.status(400).send({ error: 'This service already exists' })
         }
       }
     } else {

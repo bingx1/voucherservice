@@ -1,4 +1,3 @@
-import '../../../db/connection'
 import Service from '../../../db/service'
 
 const addServiceHandler = async (req, res) => {
@@ -7,9 +6,10 @@ const addServiceHandler = async (req, res) => {
 
     if (name) {
       try {
-        var service = await Service.create({
+        var service = new Service({
           name
         })
+        await service.save()
         res.status(201).send(service)
       } catch (error) {
         res.status(401).send({ error: 'Error while adding service' })

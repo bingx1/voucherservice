@@ -1,4 +1,3 @@
-import '../../../db/connection'
 import Service from '../../../db/service'
 
 const removeServiceHandler = async (req, res) => {

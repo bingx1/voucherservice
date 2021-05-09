@@ -1,5 +1,4 @@
 import { getSession } from 'next-auth/client'
-import '../../../db/connection'
 import User from '../../../db/user'
 
 const infoHandler = async (req, res) => {
@@ -30,6 +29,7 @@ const infoHandler = async (req, res) => {
         user.firstName = firstName
         user.lastName = lastName
         user.contact = contact
+        user.email = email
         user.invoiceName = invoiceName
         user.billEmail = billEmail
         await user.save()
