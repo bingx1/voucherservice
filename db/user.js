@@ -6,7 +6,8 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: true,
     index: true,
-    unique: true
+    unique: true,
+    trim: true
   },
   password: {
     type: String,
@@ -15,15 +16,30 @@ var userSchema = new mongoose.Schema({
   },
   firstName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   contact: {
     type: Number,
-    required: true
+    required: true,
+    trim: true
+  },
+  invoiceName: {
+    type: String,
+    trim: true
+  },
+  billEmail: {
+    type: String,
+    trim: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -37,7 +53,7 @@ userSchema.pre('save', function (next) {
 
 if (!mongoose.modelNames().includes('users')) {
   mongoose.model('users', userSchema)
+  mongoose.model('users').createIndexes()
 }
-mongoose.model('users').createIndexes()
 
 export default mongoose.model('users')

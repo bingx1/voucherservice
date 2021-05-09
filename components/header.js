@@ -1,11 +1,12 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import NavButton from './NavButton'
-import { Button, Fab } from '@material-ui/core'
+import { useSession, signOut } from 'next-auth/client'
+import NavButton from './nav-button'
+import { AppBar, Toolbar, Typography, Button, Fab, IconButton, makeStyles } from '@material-ui/core'
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
+import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined'
+import ExitToAppOutlined from '@material-ui/icons/ExitToAppOutlined'
+import StyledTooltip from './styled-tooltip'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,18 +37,27 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize'
   },
 
-  buttons: {
+  nav: {
     display: 'flex',
     justifyContent: 'space-around',
     [theme.breakpoints.only('xs')]: {
       display: 'none'
     }
+  },
+  icon: {
+    marginLeft: 10,
+    border: 'white 3px solid'
   }
 }))
 
 export default function Header() {
+  const [isAdmin, setIsAdmin] = useState(false)
   const classes = useStyles()
+  const [session, loading] = useSession()
 
+  useEffect(() => {
+    setIsAdmin(window.localStorage.getItem('vs-admin') === 'true')
+  }, [])
   return (
     <div className={classes.root}>
       <AppBar position='static' className={classes.appBar}>
@@ -59,10 +69,35 @@ export default function Header() {
               </Typography>
             </Fab>
           </Link>
-          <div className={classes.buttons}>
-            <NavButton url='/signup' text='Sign Up' />
-            <NavButton url='/login' text='Log In' />
-          </div>
+          {!session ? (
+            <div className={classes.nav}>
+              <NavButton url='/signup' text='Sign Up' />
+              <NavButton url='/login' text='Log In' />
+            </div>
+          ) : (
+            <div className={classes.nav}>
+              <Link href={isAdmin ? '/admin' : '/user'}>
+                <StyledTooltip title={isAdmin ? 'Admin' : 'User'}>
+                  <IconButton color='inherit' size='small' className={classes.icon}>
+                    {isAdmin ? <PeopleAltOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
+                  </IconButton>
+                </StyledTooltip>
+              </Link>
+              <StyledTooltip title='Log Out'>
+                <IconButton
+                  color='inherit'
+                  onClick={() => {
+                    window.localStorage.removeItem('vs-admin')
+                    signOut({ callbackUrl: '/' })
+                  }}
+                  size='small'
+                  className={classes.icon}
+                >
+                  <ExitToAppOutlined />
+                </IconButton>
+              </StyledTooltip>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </div>

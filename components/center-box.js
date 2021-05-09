@@ -13,12 +13,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const CenterForm = ({ children }) => {
+const CenterBox = ({ children }) => {
   const classes = useStyles()
 
   return (
     <Box display='flex' justify='center' alignItems='center' className={classes.mainContainer}>
-      <Container component='main' maxWidth='xs'>
+      <Container component='main'>
         <CssBaseline />
         {children}
       </Container>
@@ -26,4 +26,4 @@ const CenterForm = ({ children }) => {
   )
 }
 
-export default CenterForm
+export default CenterBox
