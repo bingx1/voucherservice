@@ -88,7 +88,7 @@ export default function Header() {
                   color='inherit'
                   onClick={() => {
                     window.localStorage.removeItem('vs-admin')
-                    signOut()
+                    signOut({ callbackUrl: '/' })
                   }}
                   size='small'
                   className={classes.icon}

@@ -40,32 +40,22 @@ export default function User() {
   const classes = useStyles()
 
   useEffect(() => {
-    async function getSessionEmail() {
-      const session = await getSession()
-      return session.user.email
-    }
-
     async function getUser(email) {
-      const response = await fetch('/api/user/view', {
-        method: 'POST',
+      const response = await fetch('/api/user/info', {
+        method: 'GET',
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
           'Content-Type': 'application/json',
           accept: 'application/json'
-        },
-        body: JSON.stringify({
-          email
-        })
+        }
       })
       const data = await response.json()
       return data
     }
 
-    getSessionEmail().then((userEmail) => {
-      getUser(userEmail).then(({ firstName, lastName, email }) => {
-        setState((state) => ({ ...state, loading: false, firstName, lastName, email }))
-      })
+    getUser().then(({ firstName, lastName, email }) => {
+      setState((state) => ({ ...state, loading: false, firstName, lastName, email }))
     })
   }, [])
 
