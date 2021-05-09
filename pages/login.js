@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Link from 'next/link'
-import { signIn } from 'next-auth/client'
+import { getSession, signIn } from 'next-auth/client'
 import {
   makeStyles,
   Avatar,
@@ -78,28 +78,12 @@ export default function LogIn() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const response = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-        'Content-Type': 'application/json',
-        accept: 'application/json'
-      },
-      body: JSON.stringify({
-        email: state.email,
-        password: state.password
-      })
-    })
+    const response = await signIn('credentials', { email: state.email, password: state.password, redirect: false })
 
-    if (response.status === 201) {
-      const user = await response.json()
-      if (user.isAdmin) window.localStorage.setItem('vs-admin', true)
-
-      signIn('credentials', { email: state.email, password: state.password, callbackUrl: '/' })
+    if (response.status === 200) {
+      window.location.href = '/'
     } else {
-      const error = (await response.json()).error
-      setState((state) => ({ ...state, error }))
+      setState((state) => ({ ...state, error: 'The Email or Password was Incorrect' }))
     }
   }
 

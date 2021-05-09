@@ -51,13 +51,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Header() {
-  const [isAdmin, setIsAdmin] = useState(false)
   const classes = useStyles()
-  const [session, loading] = useSession()
+  const [session] = useSession()
 
-  useEffect(() => {
-    setIsAdmin(window.localStorage.getItem('vs-admin') === 'true')
-  }, [])
   return (
     <div className={classes.root}>
       <AppBar position='static' className={classes.appBar}>
@@ -76,10 +72,10 @@ export default function Header() {
             </div>
           ) : (
             <div className={classes.nav}>
-              <Link href={isAdmin ? '/admin' : '/user'}>
-                <StyledTooltip title={isAdmin ? 'Admin' : 'User'}>
+              <Link href={session.isAdmin ? '/admin' : '/user'}>
+                <StyledTooltip title={session.isAdmin ? 'Admin' : 'User'}>
                   <IconButton color='inherit' size='small' className={classes.icon}>
-                    {isAdmin ? <PeopleAltOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
+                    {session.isAdmin ? <PeopleAltOutlinedIcon /> : <PersonOutlineOutlinedIcon />}
                   </IconButton>
                 </StyledTooltip>
               </Link>

@@ -2,7 +2,6 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import bcrypt from 'bcryptjs'
 import User from '../../../db/user'
-import '../../../db/connection'
 
 export default NextAuth({
     providers: [
@@ -20,12 +19,25 @@ export default NextAuth({
             }
         })
     ],
+    secret: process.env.SECRET,
     database: process.env.DB_URL,
     session: {
         jwt: true
     },
     pages: {
         signIn: 'login'
+    },
+    callbacks: {
+        async jwt(token, user, account, profile, isNewUser) {
+            if (user) {
+                token = {...token, isAdmin: user.isAdmin}
+            }
+            return token
+        },
+        async session(session, token) {
+            session = {...session, isAdmin: token.isAdmin}
+            return session
+        }
     },
     debug: false
 })

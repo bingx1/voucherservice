@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import './connection'
 
 var serviceSchema = new mongoose.Schema({
   name: {

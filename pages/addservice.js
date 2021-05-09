@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { signIn } from 'next-auth/client'
 import {
   makeStyles,
   Avatar,
@@ -121,7 +120,7 @@ export default function AddService() {
             onChange={handleChange}
             value={state.name}
           />
-          <FormHelperText error={state.error}>{message}</FormHelperText>
+          <FormHelperText error={state.error}>{state.message}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'

@@ -1,7 +1,12 @@
-import '../../../db/connection'
 import User from '../../../db/user'
+import { getToken } from 'next-auth/jwt'
 
 const getUserByIdHandler = async (req, res) => {
+  const token = await getToken({ req, secret: process.env.SECRET })
+  if (!token || !token.isAdmin) {
+    res.status(401).send({error: 'Admin access only'})
+    return
+  }
   if (req.method === 'POST') {
     const { id } = req.body
 

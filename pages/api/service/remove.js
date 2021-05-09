@@ -1,7 +1,12 @@
-import '../../../db/connection'
 import Service from '../../../db/service'
+import { getToken } from 'next-auth/jwt'
 
 const removeServiceHandler = async (req, res) => {
+  const token = await getToken({ req, secret: process.env.SECRET })
+  if (!token || !token.isAdmin) {
+    res.status(401).send({error: 'Admin access only'})
+    return
+  }
   if (req.method === 'DELETE') {
     const { name } = req.body
     console.log('removing a service:', name)

@@ -1,7 +1,12 @@
-import '../../../db/connection'
 import Service from '../../../db/service'
+import { getToken } from 'next-auth/jwt'
 
 const getAllServicesHandler = async (req, res) => {
+  const token = await getToken({ req, secret: process.env.SECRET })
+  if (!token || !token.isAdmin) {
+    res.status(401).send({error: 'Admin access only'})
+    return
+  }
   if (req.method === 'GET') {
     try {
       var services = await Service.find({})
