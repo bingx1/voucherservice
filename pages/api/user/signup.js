@@ -17,7 +17,7 @@ const signupHandler = async (req, res) => {
         if (error.code == 11000) {
           res.status(401).send({ error: 'An account with this email already exists' })
         } else {
-          res.status(500).send({error: 'something went wrong processing the request'})
+          res.status(422).send({error: 'The password needs to be at least 8 characters'})
         }
       }
     } else {
