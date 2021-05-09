@@ -9,7 +9,6 @@ const infoHandler = async (req, res) => {
   }
 
   const sessionEmail = session.user.email
-
   var user = await User.findOne({ email: sessionEmail })
 
   if (user) {
@@ -44,8 +43,12 @@ const infoHandler = async (req, res) => {
         })
         return
       }
+      res.status(201).send(user)
+    } else if (req.method === 'GET') {
+      res.status(201).send(user)
+    } else {
+      res.status(422).send({ error: 'Request method not supported' })
     }
-    res.status(201).send(user)
   } else {
     res.status(401).send({ error: 'Error retrieving/updating user information.' })
   }
