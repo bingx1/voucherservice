@@ -81,8 +81,9 @@ export default function Admin() {
     }
 
     getAllServices().then((services) => {
-      console.log('Retrieved services:', services)
-      setServices(services)
+      if (!services.error) {
+        setServices(services)
+      }
     })
   }, [])
 
@@ -99,7 +100,7 @@ export default function Admin() {
           </div>
         ))}
 
-        <Link href='/addservice'>
+        <Link href='/add-service'>
           <Button
             width='50%'
             height='50%'

@@ -14,9 +14,9 @@ const infoHandler = async (req, res) => {
 
   if (user) {
     if (req.method === 'POST') {
-      const { firstName, lastName, contact, email, invoiceName, billEmail } = req.body
+      const { firstName, lastName, contact, email, invoiceName, billEmail, password } = req.body
 
-      if (firstName && lastName && contact && email && invoiceName && billEmail) {
+      if (firstName && lastName && contact && email) {
         const emailAlreadyExists = await User.findOne({ email })
 
         if (emailAlreadyExists && email.trim() !== sessionEmail.trim()) {
@@ -32,6 +32,11 @@ const infoHandler = async (req, res) => {
         user.email = email
         user.invoiceName = invoiceName
         user.billEmail = billEmail
+
+        if (password) {
+          user.password = password
+        }
+
         await user.save()
       } else {
         res.status(401).send({

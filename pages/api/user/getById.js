@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt'
 const getUserByIdHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
-    res.status(401).send({error: 'Admin access only'})
+    res.status(401).send({ error: 'Admin access only' })
     return
   }
   if (req.method === 'POST') {
@@ -15,7 +15,7 @@ const getUserByIdHandler = async (req, res) => {
         var user = await User.findById(id)
         res.status(201).send(user)
       } catch (error) {
-        res.status(401).send({ error: 'Error retrieving all users' })
+        res.status(401).send({ error: 'Error retrieving user by ID' })
       }
     } else {
       res.status(422).send({ error: 'User ID must be non-empty' })

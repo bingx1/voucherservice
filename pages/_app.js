@@ -1,6 +1,8 @@
 import { Provider } from 'next-auth/client'
 import Header from '../components/header'
 import { ThemeProvider } from '@material-ui/core'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 import { theme } from '../styles/theme'
 import '../styles/globals.css'
 import Head from 'next/head'
@@ -18,10 +20,12 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <div className='App' style={{ minHeight: '100vh' }}>
-          <Header />
-          <Component {...pageProps} />
-        </div>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <div className='App' style={{ minHeight: '100vh' }}>
+            <Header />
+            <Component {...pageProps} />
+          </div>
+        </MuiPickersUtilsProvider>
       </ThemeProvider>
     </Provider>
   )

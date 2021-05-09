@@ -81,37 +81,42 @@ export default function AdminBookings() {
 
       var bookings = await response.json()
 
-      for (booking of bookings) {
+      for (const booking of bookings) {
         const customerId = booking.customer
         const serviceTypeId = booking.serviceType
 
         // Retrieve customer that created this booking from their ID
-        const customer = await fetch('/api/user/getById', {
-          method: 'POST',
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            'Content-Type': 'application/json',
-            accept: 'application/json'
-          },
-          body: JSON.stringify({
-            id: customerId
+        const customer = await (
+          await fetch('/api/user/getById', {
+            method: 'POST',
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+              'Content-Type': 'application/json',
+              accept: 'application/json'
+            },
+            body: JSON.stringify({
+              id: customerId,
+              secret: process.env.SECRET
+            })
           })
-        })
+        ).json()
 
         // Retrieve service type for this booking from their ID
-        const serviceType = await fetch('/api/service/getById', {
-          method: 'POST',
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            'Content-Type': 'application/json',
-            accept: 'application/json'
-          },
-          body: JSON.stringify({
-            id: serviceTypeId
+        const serviceType = await (
+          await fetch('/api/service/getById', {
+            method: 'POST',
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+              'Content-Type': 'application/json',
+              accept: 'application/json'
+            },
+            body: JSON.stringify({
+              id: serviceTypeId
+            })
           })
-        })
+        ).json()
 
         booking.customer = customer
         booking.serviceType = serviceType
@@ -121,7 +126,6 @@ export default function AdminBookings() {
     }
 
     getAllBookings().then((bookings) => {
-      console.log('Retrieved bookings:', bookings)
       setBookings(bookings)
     })
   }, [])
@@ -165,13 +169,28 @@ export default function AdminBookings() {
           <StyledTab value='ACCEPTED' label='ACCEPTED' />
           <StyledTab value='CANCELLED' label='CANCELLED' />
         </StyledTabs>
-        {bookings.map((booking) => (
+        {bookings.map((booking, index) => (
           <Booking
-            hidden={tabStatus !== 'All' && booking.status !== tabStatus}
+            key={booking._id}
+            index={index + 1}
+            hidden={tabStatus !== 'ALL' && booking.status !== tabStatus}
             booking={booking}
             handleStatusChange={handleStatusChange}
           />
         ))}
+        {/* <Link href='/add-booking'>
+          <Button
+            width='50%'
+            height='50%'
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            Add Booking
+          </Button>
+        </Link> */}
       </Paper>
     </CenterBox>
   )

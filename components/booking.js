@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, Typography } from '@material-ui/core'
+import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   hidden: {
@@ -46,32 +46,53 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Booking({ hidden, booking, handleStatusChange }) {
+export default function Booking({ index, hidden, booking, handleStatusChange }) {
   const classes = useStyles()
 
+  const handleMakePending = () => {
+    handleStatusChange(booking._id, 'PENDING')
+  }
+
   const handleAccept = () => {
-    handleStatusChange(id, 'ACCEPT')
+    handleStatusChange(booking._id, 'ACCEPTED')
+  }
+
+  const handleCancel = () => {
+    handleStatusChange(booking._id, 'CANCELLED')
   }
 
   return (
-    <Paper className={hidden ? classes.paper : classes.hidden}>
+    <Paper className={hidden ? classes.hidden : classes.paper}>
       <Typography component='h4' variant='h5'>
-        Booking #{booking._id}
+        Booking #{index}
       </Typography>
       <ul>
-        <li>
-          Customer: {booking.customer.firstName} + ' ' + {booking.customer.lastName}
-        </li>
+        <li>Customer: {booking.customer.firstName + ' ' + booking.customer.lastName}</li>
         <li>Service Type: {booking.serviceType.name}</li>
         <li>Date: {booking.dateTime}</li>
         <li>Message: {booking.message ? booking.message : 'N/A'}</li>
+        <li>Status: {booking.status}</li>
       </ul>
-      <button
-        style={booking.status !== 'PENDING' ? { display: 'none' } : {}}
-        onClick={handleAccept}
-      >
-        Accept
-      </button>
+      <Grid container spacing={1} justify='center' alignItems='center'>
+        <Button
+          style={booking.status === 'PENDING' ? { display: 'none' } : {}}
+          onClick={handleMakePending}
+        >
+          Set as Pending
+        </Button>
+        <Button
+          style={booking.status === 'ACCEPTED' ? { display: 'none' } : {}}
+          onClick={handleAccept}
+        >
+          Accept
+        </Button>
+        <Button
+          style={booking.status === 'CANCELLED' ? { display: 'none' } : {}}
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+      </Grid>
     </Paper>
   )
 }

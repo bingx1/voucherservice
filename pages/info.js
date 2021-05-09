@@ -100,7 +100,8 @@ const EditInfo = () => {
         contact: state.contact,
         email: state.email,
         invoiceName: state.invoiceName,
-        billEmail: state.billEmail
+        billEmail: state.billEmail,
+        password: state.password
       })
     })
 
@@ -148,8 +149,8 @@ const EditInfo = () => {
         lastName,
         contact,
         email,
-        invoiceName: invoiceName ? invoiceName : firstName + ' ' + lastName,
-        billEmail: billEmail ? billEmail : email
+        invoiceName: invoiceName ? invoiceName : '',
+        billEmail: billEmail ? billEmail : ''
       }))
     })
   }, [])
@@ -257,7 +258,7 @@ const EditInfo = () => {
 
                 {/* --------------------------- NEW PASSWORD FIELD --------------------------- */}
 
-                <Grid item xs={12} sm={8} md={9}>
+                <Grid item xs={12}>
                   <TextField
                     variant='outlined'
                     margin='normal'
@@ -286,18 +287,6 @@ const EditInfo = () => {
                 </Grid>
 
                 {/* ------------------------- CHANGE PASSWORD BUTTON ------------------------- */}
-
-                <Grid item container xs={12} sm={4} md={3} justify='center'>
-                  <Button
-                    onClick={handleChangePassword}
-                    variant='contained'
-                    color='primary'
-                    className={classes.submit}
-                    style={{ borderRadius: 25 }}
-                  >
-                    Change Password
-                  </Button>
-                </Grid>
               </Grid>
 
               {/* -------------------------- ERROR / SUCCESS TEXT -------------------------- */}

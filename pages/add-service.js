@@ -64,7 +64,7 @@ export default function AddService() {
   const [state, setState] = useState({
     name: '',
     error: false,
-    message: ''
+    errorMessage: ''
   })
 
   const handleChange = (e) => {
@@ -93,11 +93,11 @@ export default function AddService() {
       setState((state) => ({
         ...state,
         error: false,
-        message: 'Successfully added the ' + service.name + ' service'
+        errorMessage: 'Successfully added the ' + service.name + ' service'
       }))
     } else {
       const error = (await response.json()).error
-      setState((state) => ({ ...state, error: true, message: error }))
+      setState((state) => ({ ...state, error: true, errorMessage: error }))
     }
   }
   return (
@@ -115,12 +115,11 @@ export default function AddService() {
             id='name'
             label='New Service'
             name='name'
-            autoComplete='nservice'
             autoFocus
             onChange={handleChange}
             value={state.name}
           />
-          <FormHelperText error={state.error}>{state.message}</FormHelperText>
+          <FormHelperText error={state.error}>{state.errorMessage}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'

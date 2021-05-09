@@ -4,16 +4,19 @@ import { getToken } from 'next-auth/jwt'
 const editStatusHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
-    res.status(401).send({error: 'Admin access only'})
+    res.status(401).send({ error: 'Admin access only' })
     return
   }
+
   if (req.method === 'POST') {
     const { id, status } = req.body
-    if (status) {
+
+    if (id && status) {
       try {
-        var booking = await Booking.findById(id)
+        var booking = await Booking.findOne({ _id: id })
         booking.status = status
         await booking.save()
+        res.status(201).send(booking)
       } catch (error) {
         res.status(401).send({ error: 'Error updating booking status' })
       }
@@ -25,4 +28,4 @@ const editStatusHandler = async (req, res) => {
   }
 }
 
-export default addServiceHandler
+export default editStatusHandler
