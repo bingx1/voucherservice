@@ -1,15 +1,13 @@
 import '../../../db/connection'
-import service from '../../../db/service'
+import Service from '../../../db/service'
 
-
-
-const addserviceHandler = async (req, res) => {
+const addServiceHandler = async (req, res) => {
   if (req.method === 'POST') {
-    const { newservice } = req.body
-    if (newservice ) {
+    const { name } = req.body
+    if (name) {
       try {
-        var name = await services.create({ newservice })
-        res.status(201).send(services)
+        var service = await Service.create({ name: name })
+        res.status(201).send(service)
       } catch (error) {
         if (error.code == 11000) {
           res.status(401).send({ error: 'This service already exists' })
@@ -23,4 +21,4 @@ const addserviceHandler = async (req, res) => {
   }
 }
 
-export default addserviceHandler
+export default addServiceHandler
