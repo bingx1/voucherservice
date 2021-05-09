@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function addservice() {
+export default function AddService() {
   const classes = useStyles()
 
   const [state, setState] = useState({

@@ -112,6 +112,19 @@ export default function Admin() {
             Add Services
           </Button>
         </Link>
+        <Link href='/admin-bookings'>
+          <Button
+            width='50%'
+            height='50%'
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            View All Bookings
+          </Button>
+        </Link>
       </Paper>
     </CenterForm>
   )
