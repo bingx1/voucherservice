@@ -32,9 +32,10 @@ var bookingSchema = new mongoose.Schema({
     default: Date.now()
   },
 
-  canceled: {
-    type: Boolean,
-    default: false
+  status: {
+    type: String,
+    enum: ['PENDING', 'ACCEPTED', 'CANCELLED'],
+    default: 'PENDING'
   }
 })
 
