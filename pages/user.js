@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function User() {
   const [state, setState] = useState({ firstName: '', lastName: '', email: '', loading: true })
-
   const classes = useStyles()
 
   useEffect(() => {

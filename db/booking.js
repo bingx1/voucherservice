@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import './connection'
 
 var bookingSchema = new mongoose.Schema({
   customer: {
@@ -32,9 +33,10 @@ var bookingSchema = new mongoose.Schema({
     default: Date.now()
   },
 
-  canceled: {
-    type: Boolean,
-    default: false
+  status: {
+    type: String,
+    enum: ['PENDING', 'ACCEPTED', 'CANCELLED'],
+    default: 'PENDING'
   }
 })
 

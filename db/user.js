@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import './connection'
 import bcrypt from 'bcryptjs'
 
 var userSchema = new mongoose.Schema({
@@ -25,7 +26,7 @@ var userSchema = new mongoose.Schema({
     trim: true
   },
   contact: {
-    type: Number,
+    type: String,
     required: true,
     trim: true
   },
@@ -53,7 +54,7 @@ userSchema.pre('save', function (next) {
 
 if (!mongoose.modelNames().includes('users')) {
   mongoose.model('users', userSchema)
-  mongoose.model('users').createIndexes()
+  // mongoose.model('users').createIndexes()
 }
 
 export default mongoose.model('users')

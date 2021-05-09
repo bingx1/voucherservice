@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Link from 'next/link'
-import { getSession, signIn } from 'next-auth/client'
 import {
   makeStyles,
   Avatar,
@@ -16,7 +14,6 @@ import {
   InputAdornment,
   Paper
 } from '@material-ui/core'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
 import CenterForm from '../components/center-form'
 
 const useStyles = makeStyles((theme) => ({
@@ -61,48 +58,53 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LogIn() {
+export default function AddService() {
   const classes = useStyles()
 
   const [state, setState] = useState({
-    email: '',
-    password: '',
-    error: '',
-    showPassword: false
+    name: '',
+    error: false,
+    errorMessage: ''
   })
 
   const handleChange = (e) => {
-    setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+    let value = e.target.value
+    setState((state) => ({ ...state, [e.target.name]: value }))
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const response = await signIn('credentials', { email: state.email, password: state.password, redirect: false })
+    const response = await fetch('/api/service/add', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Content-Type': 'application/json',
+        accept: 'application/json'
+      },
+      body: JSON.stringify({
+        name: state.name
+      })
+    })
 
-    if (response.status === 200) {
-      window.location.href = '/'
+    if (response.status === 201) {
+      const service = await response.json()
+      setState((state) => ({
+        ...state,
+        error: false,
+        errorMessage: 'Successfully added the ' + service.name + ' service'
+      }))
     } else {
-      setState((state) => ({ ...state, error: 'The Email or Password was Incorrect' }))
+      const error = (await response.json()).error
+      setState((state) => ({ ...state, error: true, errorMessage: error }))
     }
   }
-
-  const handleClickShowPassword = () => {
-    setState({ ...state, showPassword: !state.showPassword })
-  }
-
-  const handleMouseDownPassword = (e) => {
-    e.preventDefault()
-  }
-
   return (
     <CenterForm>
       <Paper elevation={2} className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon fontSize='large' style={{ color: 'black' }} />
-        </Avatar>
         <Typography component='h1' variant='h5' className={classes.formTitle}>
-          Log In
+          Add Services
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
@@ -110,63 +112,26 @@ export default function LogIn() {
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            name='email'
-            type='email'
-            autoComplete='email'
+            id='name'
+            label='New Service'
+            name='name'
             autoFocus
             onChange={handleChange}
-            value={state.email}
+            value={state.name}
           />
-          <TextField
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            name='password'
-            label='Password'
-            id='password'
-            autoComplete='current-password'
-            onChange={handleChange}
-            value={state.password}
-            type={state.showPassword ? 'text' : 'password'}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton
-                    aria-label='toggle password visibility'
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {state.showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-
-          <FormHelperText error>{state.error ? state.error : ' '}</FormHelperText>
+          <FormHelperText error={state.error}>{state.errorMessage}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'
               width='50%'
               height='50%'
-              justify='center'
               variant='contained'
               color='primary'
               className={classes.submit}
               style={{ borderRadius: 25 }}
             >
-              Log In
+              Add
             </Button>
-          </Grid>
-          <Grid container justify='center'>
-            <Grid item>
-              <Link href='/signup'>
-                <a className={classes.link}>Don't have an account? Sign up</a>
-              </Link>
-            </Grid>
           </Grid>
         </form>
       </Paper>
