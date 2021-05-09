@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { signIn } from 'next-auth/client'
 import {
@@ -16,7 +16,6 @@ import {
   Paper
 } from '@material-ui/core'
 import CenterForm from '../components/center-form'
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -60,9 +59,32 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-
 export default function Admin() {
   const classes = useStyles()
+  const [services, setServices] = useState([])
+
+  useEffect(() => {
+    async function getAllServices() {
+      const response = await fetch('/api/service/all', {
+        method: 'GET',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+          'Content-Type': 'application/json',
+          accept: 'application/json'
+        }
+      })
+
+      const services = await response.json()
+
+      return services
+    }
+
+    getAllServices().then((services) => {
+      console.log('Retrieved services:', services)
+      setServices(services)
+    })
+  }, [])
 
   return (
     <CenterForm>
@@ -70,25 +92,40 @@ export default function Admin() {
         <Typography component='h1' variant='h5' className={classes.formTitle}>
           Services
         </Typography>
-        <p>
 
-        </p>
+        {services.map((service) => (
+          <div key={service.name}>
+            <div>{service.name}</div>
+          </div>
+        ))}
 
         <Link href='/addservice'>
-        <Button
-              type='submit'
-              width='50%'
-              height='50%'
-              justify='center'
-              variant='contained'
-              color='primary'
-              className={classes.submit}
-              style={{ borderRadius: 25 }}
-            >
-              Add Services
+          <Button
+            width='50%'
+            height='50%'
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            Add Services
           </Button>
-          </Link>
-        </Paper>
-      </CenterForm>
+        </Link>
+        <Link href='/admin-bookings'>
+          <Button
+            width='50%'
+            height='50%'
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            View All Bookings
+          </Button>
+        </Link>
+      </Paper>
+    </CenterForm>
   )
 }

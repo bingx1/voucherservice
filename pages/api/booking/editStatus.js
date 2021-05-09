@@ -1,25 +1,24 @@
+import Booking from '../../../db/booking'
 import { getToken } from 'next-auth/jwt'
-import Service from '../../../db/service'
 
-const addServiceHandler = async (req, res) => {
+const editStatusHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
     res.status(401).send({error: 'Admin access only'})
     return
   }
   if (req.method === 'POST') {
-    const { name } = req.body
-    if (name) {
+    const { id, status } = req.body
+    if (status) {
       try {
-        var service = await Service.create({ name: name })
-        res.status(201).send(service)
+        var booking = await Booking.findById(id)
+        booking.status = status
+        await booking.save()
       } catch (error) {
-        if (error.code == 11000) {
-          res.status(400).send({ error: 'This service already exists' })
-        }
+        res.status(401).send({ error: 'Error updating booking status' })
       }
     } else {
-      res.status(422).send({ error: 'Field must be filled' })
+      res.status(422).send({ error: 'Status must be non-empty' })
     }
   } else {
     res.status(422).send({ error: 'Request method not supported' })

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { signIn } from 'next-auth/client'
 import {
   makeStyles,
   Avatar,
@@ -59,11 +58,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function addservice() {
+export default function AddService() {
   const classes = useStyles()
 
   const [state, setState] = useState({
-    name: ''
+    name: '',
+    error: false,
+    message: ''
   })
 
   const handleChange = (e) => {
@@ -74,7 +75,7 @@ export default function addservice() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const response = await fetch('/api/admin/addservice', {
+    const response = await fetch('/api/service/add', {
       method: 'POST',
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -89,9 +90,14 @@ export default function addservice() {
 
     if (response.status === 201) {
       const service = await response.json()
+      setState((state) => ({
+        ...state,
+        error: false,
+        message: 'Successfully added the ' + service.name + ' service'
+      }))
     } else {
       const error = (await response.json()).error
-      setState((state) => ({ ...state, error: error }))
+      setState((state) => ({ ...state, error: true, message: error }))
     }
   }
   return (
@@ -114,6 +120,7 @@ export default function addservice() {
             onChange={handleChange}
             value={state.name}
           />
+          <FormHelperText error={state.error}>{state.message}</FormHelperText>
           <Grid container justify='center'>
             <Button
               type='submit'

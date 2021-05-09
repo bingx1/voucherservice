@@ -19,6 +19,7 @@ export default NextAuth({
             }
         })
     ],
+    secret: process.env.SECRET,
     database: process.env.DB_URL,
     session: {
         jwt: true
