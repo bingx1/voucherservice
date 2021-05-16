@@ -70,20 +70,37 @@ export default function User() {
           <Typography component='h2' variant='subtitle1'>
             {state.email}
           </Typography>
-          <Grid container justify='center'>
-            <Link href='/info'>
-              <Button
-                type='submit'
-                width='50%'
-                height='50%'
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                style={{ borderRadius: 25 }}
-              >
-                Edit Info
-              </Button>
-            </Link>
+          <Grid container spacing={2} justify='center' alignItems='center'>
+            <Grid item>
+              <Link href='/info'>
+                <Button
+                  type='submit'
+                  width='50%'
+                  height='50%'
+                  variant='contained'
+                  color='primary'
+                  className={classes.submit}
+                  style={{ borderRadius: 25 }}
+                >
+                  Edit Info
+                </Button>
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href='/my-bookings'>
+                <Button
+                  width='50%'
+                  height='50%'
+                  justify='center'
+                  variant='contained'
+                  color='primary'
+                  className={classes.submit}
+                  style={{ borderRadius: 25 }}
+                >
+                  View My Bookings
+                </Button>
+              </Link>
+            </Grid>
           </Grid>
         </Paper>
       )}

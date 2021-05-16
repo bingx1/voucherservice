@@ -41,6 +41,16 @@ var userSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
     default: false
+  },
+  bookings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'bookings'
+    }
+  ],
+  points: {
+    type: Number,
+    default: 0
   }
 })
 
