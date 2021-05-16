@@ -141,6 +141,7 @@ export default function MyBookings() {
                 <TableCell align='left'>Delivery Method</TableCell>
                 <TableCell align='left'>Date Time</TableCell>
                 <TableCell align='left'>Message</TableCell>
+                <TableCell align='left'>Status</TableCell>
                 <TableCell align='center'>Commands</TableCell>
               </TableRow>
             </TableHead>
@@ -151,30 +152,32 @@ export default function MyBookings() {
                   <TableCell align='left'>{booking.deliveryMethod}</TableCell>
                   <TableCell align='left'>{new Date(booking.dateTime).toLocaleString()}</TableCell>
                   <TableCell align='left'>{booking.message ? booking.message : 'N/A'}</TableCell>
+                  <TableCell align='left'>{booking.status}</TableCell>
                   <TableCell align='left'>
-                    <Grid
-                      container
-                      spacing={1}
-                      direction='column'
-                      justify='center'
-                      alignItems='center'
-                    >
-                      <Grid item>
-                        <Button
-                          // TODO: Add click handler to CANCEL voucher bookings
-                          // onClick={}
-                          width='50%'
-                          height='50%'
-                          variant='contained'
-                          color='primary'
-                          className={classes.submit}
-                          startIcon={<DeleteIcon />}
-                          style={{ borderRadius: 25 }}
-                        >
-                          Cancel
-                        </Button>
+                    {booking.status !== 'CANCELLED' && (
+                      <Grid
+                        container
+                        spacing={1}
+                        direction='column'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Grid item>
+                          <Button
+                            onClick={() => handleStatusChange(booking._id, 'CANCELLED')}
+                            width='50%'
+                            height='50%'
+                            variant='contained'
+                            color='primary'
+                            className={classes.submit}
+                            startIcon={<DeleteIcon />}
+                            style={{ borderRadius: 25 }}
+                          >
+                            Cancel
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
