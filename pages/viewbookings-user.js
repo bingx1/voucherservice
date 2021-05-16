@@ -128,20 +128,10 @@ export default function Admin() {
                 variant='contained'
                 color='primary'
                 className={classes.submit}
+                startIcon={<DeleteIcon />}
                 style={{ borderRadius: 25 }}
               >
-                Edit 
-              </Button></TableCell>
-              <TableCell align="right"><Button
-                type='submit'
-                width='50%'
-                height='50%'
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                style={{ borderRadius: 25 }}
-              >
-                Delete 
+                Cancel 
               </Button></TableCell>
             </TableRow>
           ))}
