@@ -6,12 +6,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'none'
   },
   paper: {
-    padding: 20,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#fafafa',
-    borderRadius: 20
+    borderRadius: 20,
+    width: 'fit-content',
+    padding: 10
+
     //   webkitBoxShadow:
     //     '0 2.8px 2.2px rgba(f, f, f, 0.034), 0 6.7px 5.3px rgba(f, f, f, 0.048), 0 12.5px 10px rgba(f, f, f, 0.06), 0 22.3px 17.9px rgba(f, f, f, 0.072), 0 41.8px 33.4px rgba(f, f, f, 0.086), 0 100px 80px rgba(f, f, f, 0.12)',
     //   mozBoxShadow:
@@ -19,20 +21,6 @@ const useStyles = makeStyles((theme) => ({
     //   boxShadow:
     //     '0 2.8px 2.2px rgba(f, f, f, 0.034), 0 6.7px 5.3px rgba(f, f, f, 0.048), 0 12.5px 10px rgba(f, f, f, 0.06), 0 22.3px 17.9px rgba(f, f, f, 0.072), 0 41.8px 33.4px rgba(f, f, f, 0.086), 0 100px 80px rgba(f, f, f, 0.12)'
     //
-  },
-  formTitle: {
-    fontFamily: ['Roboto Mono', 'monospace']
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: '#03DAC5',
-    height: '60px',
-    width: '60px'
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-    fontFamily: 'Roboto'
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -62,37 +50,47 @@ export default function Booking({ index, hidden, booking, handleStatusChange }) 
   }
 
   return (
-    <Paper className={hidden ? classes.hidden : classes.paper}>
-      <Typography component='h4' variant='h5'>
-        Booking #{index}
-      </Typography>
-      <ul>
-        <li>Customer: {booking.customer.firstName + ' ' + booking.customer.lastName}</li>
-        <li>Service Type: {booking.serviceType.name}</li>
-        <li>Date: {booking.dateTime}</li>
-        <li>Message: {booking.message ? booking.message : 'N/A'}</li>
-        <li>Status: {booking.status}</li>
-      </ul>
-      <Grid container spacing={1} justify='center' alignItems='center'>
-        <Button
-          style={booking.status === 'PENDING' ? { display: 'none' } : {}}
-          onClick={handleMakePending}
-        >
-          Set as Pending
-        </Button>
-        <Button
-          style={booking.status === 'ACCEPTED' ? { display: 'none' } : {}}
-          onClick={handleAccept}
-        >
-          Accept
-        </Button>
-        <Button
-          style={booking.status === 'CANCELLED' ? { display: 'none' } : {}}
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-      </Grid>
-    </Paper>
+    <Grid item container xs={12} justify='center' alignItems='center'>
+      <Paper className={hidden ? classes.hidden : classes.paper}>
+        <Grid container>
+          <Grid item xs={12} sm={4} md={3} container justify='center' alignItems='center'>
+            <Typography component='h4' variant='h5'>
+              Booking #{index}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={8} md={6} container justify='center' alignItems='center'>
+            <div>
+              <ul>
+                <li>Customer: {booking.customer.firstName + ' ' + booking.customer.lastName}</li>
+                <li>Service Type: {booking.serviceType.name}</li>
+                <li>Date: {booking.dateTime}</li>
+                <li>Message: {booking.message ? booking.message : 'N/A'}</li>
+                <li>Status: {booking.status}</li>
+              </ul>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={3} container spacing={1} justify='center' alignItems='center'>
+            <Button
+              style={booking.status === 'PENDING' ? { display: 'none' } : {}}
+              onClick={handleMakePending}
+            >
+              Set as Pending
+            </Button>
+            <Button
+              style={booking.status === 'ACCEPTED' ? { display: 'none' } : {}}
+              onClick={handleAccept}
+            >
+              Accept
+            </Button>
+            <Button
+              style={booking.status === 'CANCELLED' ? { display: 'none' } : {}}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Grid>
   )
 }

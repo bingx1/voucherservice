@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core'
 import CenterBox from '../components/center-box'
 import Booking from '../components/booking'
-import BookingContainer from '../components/booking-container'
 import { StyledTabs, StyledTab } from '../components/styled-tabs'
 
 const useStyles = makeStyles((theme) => ({
@@ -62,15 +61,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function AdminBookings() {
+export default function MyBookings() {
   const classes = useStyles()
 
   const [bookings, setBookings] = useState([])
-  const [tabStatus, setTabStatus] = useState('ALL')
 
   useEffect(() => {
-    async function getAllBookings() {
-      const response = await fetch('/api/booking/all', {
+    async function getAllUserBookings() {
+      const response = await fetch('/api/booking/allByEmail', {
         method: 'GET',
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -80,13 +78,13 @@ export default function AdminBookings() {
         }
       })
 
-      var bookings = await response.json()
-
+      const bookings = await response.json()
       return bookings
     }
 
-    getAllBookings().then((bookings) => {
-      setBookings(bookings)
+    getAllUserBookings().then((bookings) => {
+      console.log('Retrieved bookings:', bookings)
+      // setBookings(bookings)
     })
   }, [])
 
@@ -121,25 +119,24 @@ export default function AdminBookings() {
     <CenterBox>
       <Paper elevation={2} className={classes.paper}>
         <Typography component='h1' variant='h5' className={classes.formTitle}>
-          Bookings
+          My Bookings
         </Typography>
-        <StyledTabs value={tabStatus} onChange={handleChange}>
-          <StyledTab value='ALL' label='ALL' />
-          <StyledTab value='PENDING' label='PENDING' />
-          <StyledTab value='ACCEPTED' label='ACCEPTED' />
-          <StyledTab value='CANCELLED' label='CANCELLED' />
-        </StyledTabs>
-        <BookingContainer>
-          {bookings.map((booking, index) => (
-            <Booking
-              key={booking._id}
-              index={index + 1}
-              hidden={tabStatus !== 'ALL' && booking.status !== tabStatus}
-              booking={booking}
-              handleStatusChange={handleStatusChange}
-            />
-          ))}
-        </BookingContainer>
+
+        {/* TODO: Finish UI for viewing bookings */}
+
+        <Link href='/add-booking'>
+          <Button
+            width='50%'
+            height='50%'
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            Add Booking
+          </Button>
+        </Link>
       </Paper>
     </CenterBox>
   )
