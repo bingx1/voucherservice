@@ -1,4 +1,5 @@
 import Booking from '../../../db/booking'
+import Service from '../../../db/service'
 import User from '../../../db/user'
 import { getToken } from 'next-auth/jwt'
 import { getSession } from 'next-auth/client'
@@ -21,10 +22,11 @@ const getAllBookingsByEmailHandler = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      var user = await User.findOne({ email: sessionEmail })
-        .populate('bookings')
-        .populate('bookings.customer')
-        .populate('bookings.serviceType')
+      var user = await User.findOne({ email: sessionEmail }).populate({
+        path: 'bookings',
+        model: 'bookings',
+        populate: { path: 'serviceType', model: 'services' }
+      })
 
       var bookings = user.bookings
 

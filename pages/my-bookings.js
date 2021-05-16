@@ -19,14 +19,15 @@ import CenterBox from '../components/center-box'
 import Booking from '../components/booking'
 import { StyledTabs, StyledTab } from '../components/styled-tabs'
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
 import DeleteIcon from '@material-ui/icons/Delete'
+import DoneIcon from '@material-ui/icons/Done'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -61,7 +62,8 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     backgroundColor: '#6200EE',
-    fontFamily: ['Roboto Mono', 'monospace']
+    fontFamily: ['Roboto Mono', 'monospace'],
+    width: 125
   },
   link: {
     '&:hover': {
@@ -93,7 +95,7 @@ export default function MyBookings() {
 
     getAllUserBookings().then((bookings) => {
       console.log('Retrieved bookings:', bookings)
-      // setBookings(bookings)
+      setBookings(bookings)
     })
   }, [])
 
@@ -114,7 +116,6 @@ export default function MyBookings() {
     })
 
     if (response.status === 201) {
-      
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) booking.status = status
@@ -132,45 +133,54 @@ export default function MyBookings() {
           My Bookings
         </Typography>
 
-        {/* TODO: Finish UI for viewing bookings */}
         <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">Service Type</TableCell>
-            <TableCell align="right">Delivery Method</TableCell>
-            <TableCell align="right">Date Time</TableCell>
-            <TableCell align="right">Message</TableCell>
-            <TableCell align="right">Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {bookings.map((booking) => (
-            <TableRow key={booking.customer}>
-              <TableCell component="th" scope="row">
-                {booking.customer}
-              </TableCell>
-              <TableCell align="right">{booking.serviceType}</TableCell>
-              <TableCell align="right">{booking.deliveryMethod}</TableCell>
-              <TableCell align="right">{booking.customer}</TableCell>
-              <TableCell align="right">{booking.customer}</TableCell>
-              <TableCell align="right"><Button
-                type='submit'
-                width='50%'
-                height='50%'
-                variant='contained'
-                color='primary'
-                className={classes.submit}
-                startIcon={<DeleteIcon />}
-                style={{ borderRadius: 25 }}
-              >
-                Cancel 
-              </Button></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <Table className={classes.table} aria-label='simple table'>
+            <TableHead>
+              <TableRow>
+                <TableCell align='left'>Service Type</TableCell>
+                <TableCell align='left'>Delivery Method</TableCell>
+                <TableCell align='left'>Date Time</TableCell>
+                <TableCell align='left'>Message</TableCell>
+                <TableCell align='center'>Commands</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {bookings.map((booking, idx) => (
+                <TableRow key={idx}>
+                  <TableCell align='left'>{booking.serviceType.name}</TableCell>
+                  <TableCell align='left'>{booking.deliveryMethod}</TableCell>
+                  <TableCell align='left'>{new Date(booking.dateTime).toLocaleString()}</TableCell>
+                  <TableCell align='left'>{booking.message ? booking.message : 'N/A'}</TableCell>
+                  <TableCell align='left'>
+                    <Grid
+                      container
+                      spacing={1}
+                      direction='column'
+                      justify='center'
+                      alignItems='center'
+                    >
+                      <Grid item>
+                        <Button
+                          // TODO: Add click handler to CANCEL voucher bookings
+                          // onClick={}
+                          width='50%'
+                          height='50%'
+                          variant='contained'
+                          color='primary'
+                          className={classes.submit}
+                          startIcon={<DeleteIcon />}
+                          style={{ borderRadius: 25 }}
+                        >
+                          Cancel
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <Link href='/add-booking'>
           <Button
