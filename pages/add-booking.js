@@ -104,6 +104,14 @@ export default function AddService() {
       ).json()
 
       if (user) {
+        const payload = JSON.stringify({
+          customer: user._id,
+          serviceType: serviceId,
+          deliveryMethod: state.deliveryMethod,
+          dateTime: selectedDate,
+          message: state.message
+        })
+        console.log(payload)
         const response = await fetch('/api/booking/add', {
           method: 'POST',
           headers: {
@@ -112,13 +120,7 @@ export default function AddService() {
             'Content-Type': 'application/json',
             accept: 'application/json'
           },
-          body: JSON.stringify({
-            customer: user._id,
-            serviceType: serviceId,
-            deliveryMethod: state.deliveryMethod,
-            dateTime: selectedDate,
-            message: state.message
-          })
+          body: payload
         })
 
         if (response.status === 201) {
