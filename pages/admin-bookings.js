@@ -109,8 +109,12 @@ export default function AdminBookings() {
     if (response.status === 201) {
       setBookings((bookings) =>
         bookings.map((booking) => {
-          if (booking._id === id) booking.status = status
-
+          if (booking._id === id) {
+            booking.status = status
+            console.log(booking);
+            console.log(booking.customer)
+            console.log(booking.customer.contact)
+          }
           return booking
         })
       )

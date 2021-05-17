@@ -15,6 +15,8 @@ export default async function (req, res) {
     
     const { customer, serviceType, deliveryMethod, dateTime, message } = req.body
 
+    const token = await getToken({ req, secret: process.env.SECRET })
+
     const user = await User.findOne({ _id: customer })
     
     const type = await service.findOne({ _id: serviceType})
@@ -31,24 +33,48 @@ export default async function (req, res) {
     
     console.log(user);
 
-    const mailData = {
-      from: process.env.EMAIL,
-      to: !user.isAdmin ? "kyruuk@gmail.com" : sender_email,
-      subject: `New Voucher booking from ${first_name} ${last_name}`,
-      text: message + " | Sent from: " + sender_email,
-      html: `<div><strong> New voucher booking </strong></div>
-      <p>A new voucher booking has been received from ${first_name} ${last_name}. 
-      Please visit the admin dashboard to accept the booking.</p>
-      <div>Date: ${dateTime}</div> 
-      <div>Service type: ${type_name}</div>
-      <div>Location: ${deliveryMethod}<br></div>
-      <div><br><b>Client contact details</b></div>
-      <div>Name: ${first_name} ${last_name}</div>
-      <div>Phone number: ${phone_number}</div>
-      <div>Email address: ${sender_email}</div>
-      <div>${message}</div>
-      <p>Sent from: ${sender_email}</p>`
-    }  
+    var mailData;
+
+    if (!token.isAdmin){
+       mailData = {
+        from: process.env.EMAIL,
+        to: "kyruuk@gmail.com",
+        subject: `New Voucher booking from ${first_name} ${last_name}`,
+        text: message + " | Sent from: " + sender_email,
+        html: `<div><strong> New voucher booking </strong></div>
+        <p>A new voucher booking has been received from ${first_name} ${last_name}. 
+        Please visit the admin dashboard to accept the booking.</p>
+        <div>Date: ${dateTime}</div> 
+        <div>Service type: ${type_name}</div>
+        <div>Location: ${deliveryMethod}<br></div>
+        <div><br><b>Client contact details</b></div>
+        <div>Name: ${first_name} ${last_name}</div>
+        <div>Phone number: ${phone_number}</div>
+        <div>Email address: ${sender_email}</div>
+        <div>${message}</div>
+        <p>Sent from: ${sender_email}</p>`
+      }  
+    }
+    else{
+       mailData = {
+        from: process.env.EMAIL,
+        to: sender_email,
+        subject: `Voucher booking confirmed for ${first_name} ${last_name}`,
+        text: message + " | Sent from: " + process.env.EMAIL,
+        html: `<div><strong> New voucher booking </strong></div>
+        <p>Your voucher booking has been confirmed by the administrator.  
+        Please see below for booking details.</p>
+        <div>Date: ${dateTime}</div> 
+        <div>Service type: ${type_name}</div>
+        <div>Location: ${deliveryMethod}<br></div>
+        <div><br><b>Client contact details</b></div>
+        <div>Name: ${first_name} ${last_name}</div>
+        <div>Phone number: ${phone_number}</div>
+        <div>Email address: ${sender_email}</div>
+        <p>Sent from: ${process.env.EMAIL}</p>`
+      }  
+    }
+
     
     transporter.sendMail(mailData, function (err, info) {
       if(err)
