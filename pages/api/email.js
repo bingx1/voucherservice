@@ -41,7 +41,7 @@ export default async function (req, res) {
     if (!token.isAdmin) {
       mailData = {
         from: process.env.EMAIL,
-        to: "kyruuk@gmail.com",
+        to: process.env.ADMIN_EMAIL,
         subject: `New Voucher booking from ${first_name} ${last_name}`,
         text: message + " | Sent from: " + sender_email,
         html: `<div><strong> New voucher booking </strong></div>
