@@ -17,7 +17,10 @@ export default async function (req, res) {
 
     const user = await User.findOne({ _id: customer })
     
-    // const type = await 
+    const type = await service.findOne({ _id: serviceType})
+
+    const type_name = type.name
+
     const sender_email = user.email
 
     const phone_number = user.contact
@@ -33,7 +36,18 @@ export default async function (req, res) {
       to: !user.isAdmin ? "kyruuk@gmail.com" : sender_email,
       subject: `New Voucher booking from ${first_name} ${last_name}`,
       text: message + " | Sent from: " + sender_email,
-      html: `<div>Date: ${dateTime}</div> <div>Service type: ${serviceType}</div><div>${message}</div><p>Sent from: ${sender_email}</p>`
+      html: `<div><strong> New voucher booking </strong></div>
+      <p>A new voucher booking has been received from ${first_name} ${last_name}. 
+      Please visit the admin dashboard to accept the booking.</p>
+      <div>Date: ${dateTime}</div> 
+      <div>Service type: ${type_name}</div>
+      <div>Location: ${deliveryMethod}<br></div>
+      <div><br><b>Client contact details</b></div>
+      <div>Name: ${first_name} ${last_name}</div>
+      <div>Phone number: ${phone_number}</div>
+      <div>Email address: ${sender_email}</div>
+      <div>${message}</div>
+      <p>Sent from: ${sender_email}</p>`
     }  
     
     transporter.sendMail(mailData, function (err, info) {
