@@ -123,6 +123,14 @@ export default function AddService() {
           body: payload
         })
 
+        const email_response = await fetch('/api/email',{
+          method: 'POST', 
+          headers: {'Content-Type': 'application/json', 
+            accept:'application/json'
+            },
+            body: payload 
+          })
+        // console.log(email_response)
         if (response.status === 201) {
           setState((state) => ({
             ...state,
