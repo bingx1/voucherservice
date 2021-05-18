@@ -94,7 +94,7 @@ export default function MyBookings() {
     }
 
     getAllUserBookings().then((bookings) => {
-      console.log('Retrieved bookings:', bookings)
+      // console.log('Retrieved bookings:', bookings)
       setBookings(bookings)
     })
   }, [])
@@ -116,6 +116,23 @@ export default function MyBookings() {
     })
 
     if (response.status === 201) {
+      var booking = bookings.find((booking) => booking._id === id)
+
+      const payload = {
+        customer: booking.customer._id,
+        serviceType: booking.serviceType._id,
+        deliveryMethod: booking.deliveryMethod,
+        dateTime: new Date(booking.dateTime).toLocaleString(),
+        message: booking.message,
+        status: status
+      }
+
+      const email_response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) booking.status = status
@@ -151,7 +168,7 @@ export default function MyBookings() {
                   <TableCell align='left'>{booking.serviceType.name}</TableCell>
                   <TableCell align='left'>{booking.deliveryMethod}</TableCell>
                   <TableCell align='left'>{new Date(booking.dateTime).toLocaleString()}</TableCell>
-                  <TableCell align='left'>{booking.message ? booking.message : 'N/A'}</TableCell>
+                  <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
                   <TableCell align='left'>{booking.status}</TableCell>
                   <TableCell align='left'>
                     {booking.status !== 'CANCELLED' && (

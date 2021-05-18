@@ -30,17 +30,15 @@ const addBookingHandler = async (req, res) => {
           dateTime,
           message
         })
-        console.log(req.body);
-        console.log(customer);
-        console.log(serviceType);
-        console.log(deliveryMethod);
-        console.log(dateTime);
+
         await booking.save()
         await user.bookings.push(booking._id)
         await user.save()
 
         res.status(201).send(booking)
       } catch (error) {
+        console.log(error)
+
         res.status(401).send({ error: 'Error creating voucher booking' })
       }
     } else {

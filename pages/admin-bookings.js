@@ -95,7 +95,7 @@ export default function AdminBookings() {
   }
 
   async function handleStatusChange(id, status) {
-    console.log("New status is " + status)
+    // console.log('New status is ' + status)
     const response = await fetch('/api/booking/editStatus', {
       method: 'POST',
       headers: {
@@ -107,37 +107,33 @@ export default function AdminBookings() {
       body: JSON.stringify({ id, status })
     })
 
-    var payload;
+    var payload
 
     if (response.status === 201) {
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) {
             booking.status = status
-            console.log(booking);
-            console.log(booking.customer)
-            console.log(booking.customer.contact)
-            payload = JSON.stringify({
+            payload = {
               customer: booking.customer._id,
               serviceType: booking.serviceType._id,
               deliveryMethod: booking.deliveryMethod,
-              dateTime: booking.dateTime,
-              message: booking.message
-            })
+              dateTime: new Date(booking.dateTime).toLocaleString(),
+              message: booking.message,
+              status
+            }
           }
           return booking
         })
       )
     }
     // Send the email confirmation
-    if (status == 'ACCEPTED' && payload){
-      await fetch('/api/email',{
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json', 
-          accept:'application/json'
-          },
-          body: payload 
-        })
+    if (status == 'ACCEPTED' && payload) {
+      await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify(payload)
+      })
     }
   }
 
