@@ -3,8 +3,8 @@ import { getToken } from 'next-auth/jwt'
 
 const editStatusHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
-  if (!token || !token.isAdmin) {
-    res.status(401).send({ error: 'Admin access only' })
+  if (!token) {
+    res.status(401).send({ error: 'Logged-in users only' })
     return
   }
 

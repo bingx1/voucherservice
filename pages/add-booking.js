@@ -104,6 +104,15 @@ export default function AddService() {
       ).json()
 
       if (user) {
+        const payload = {
+          customer: user._id,
+          serviceType: serviceId,
+          deliveryMethod: state.deliveryMethod,
+          dateTime: selectedDate,
+          message: state.message,
+          status: 'PENDING'
+        }
+
         const response = await fetch('/api/booking/add', {
           method: 'POST',
           headers: {
@@ -112,16 +121,16 @@ export default function AddService() {
             'Content-Type': 'application/json',
             accept: 'application/json'
           },
-          body: JSON.stringify({
-            customer: user._id,
-            serviceType: serviceId,
-            deliveryMethod: state.deliveryMethod,
-            dateTime: selectedDate,
-            message: state.message
-          })
+          body: JSON.stringify(payload)
         })
 
         if (response.status === 201) {
+          const email_response = await fetch('/api/email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify({ ...payload, dateTime: new Date(selectedDate).toLocaleString() })
+          })
+
           setState((state) => ({
             ...state,
             error: false,

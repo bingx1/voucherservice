@@ -13,18 +13,20 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
-  Paper,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody
+  Paper
 } from '@material-ui/core'
 import CenterBox from '../components/center-box'
 import Booking from '../components/booking'
-import BookingContainer from '../components/booking-container'
 import { StyledTabs, StyledTab } from '../components/styled-tabs'
+
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+
+import DeleteIcon from '@material-ui/icons/Delete'
 import DoneIcon from '@material-ui/icons/Done'
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#fafafa',
     borderRadius: 20,
     height: '80vh'
+
     //   webkitBoxShadow:
     //     '0 2.8px 2.2px rgba(f, f, f, 0.034), 0 6.7px 5.3px rgba(f, f, f, 0.048), 0 12.5px 10px rgba(f, f, f, 0.06), 0 22.3px 17.9px rgba(f, f, f, 0.072), 0 41.8px 33.4px rgba(f, f, f, 0.086), 0 100px 80px rgba(f, f, f, 0.12)',
     //   mozBoxShadow:
@@ -70,15 +73,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function AdminBookings() {
+export default function MyBookings() {
   const classes = useStyles()
 
   const [bookings, setBookings] = useState([])
   const [tabStatus, setTabStatus] = useState('ALL')
 
   useEffect(() => {
-    async function getAllBookings() {
-      const response = await fetch('/api/booking/all', {
+    async function getAllUserBookings() {
+      const response = await fetch('/api/booking/allByEmail', {
         method: 'GET',
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -88,12 +91,12 @@ export default function AdminBookings() {
         }
       })
 
-      var bookings = await response.json()
-
+      const bookings = await response.json()
       return bookings
     }
 
-    getAllBookings().then((bookings) => {
+    getAllUserBookings().then((bookings) => {
+      // console.log('Retrieved bookings:', bookings)
       setBookings(bookings)
     })
   }, [])
@@ -103,7 +106,6 @@ export default function AdminBookings() {
   }
 
   async function handleStatusChange(id, status) {
-    // console.log('New status is ' + status)
     const response = await fetch('/api/booking/editStatus', {
       method: 'POST',
       headers: {
@@ -115,41 +117,48 @@ export default function AdminBookings() {
       body: JSON.stringify({ id, status })
     })
 
-    var payload
-
     if (response.status === 201) {
-      setBookings((bookings) =>
-        bookings.map((booking) => {
-          if (booking._id === id) {
-            booking.status = status
-            payload = {
-              customer: booking.customer._id,
-              serviceType: booking.serviceType._id,
-              deliveryMethod: booking.deliveryMethod,
-              dateTime: new Date(booking.dateTime).toLocaleString(),
-              message: booking.message,
-              status
-            }
-          }
-          return booking
-        })
-      )
-    }
-    // Send the email confirmation
-    if (status == 'ACCEPTED' && payload) {
-      await fetch('/api/email', {
+      var booking = bookings.find((booking) => booking._id === id)
+
+      const payload = {
+        customer: booking.customer._id,
+        serviceType: booking.serviceType._id,
+        deliveryMethod: booking.deliveryMethod,
+        dateTime: new Date(booking.dateTime).toLocaleString(),
+        message: status === 'CANCELLED' ? booking.cancelMessage : booking.message,
+        status: status
+      }
+
+      const email_response = await fetch('/api/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', accept: 'application/json' },
         body: JSON.stringify(payload)
       })
+
+      setBookings((bookings) =>
+        bookings.map((booking) => {
+          if (booking._id === id) booking.status = status
+
+          return { ...booking, cancelMessage: booking.cancelMessage ? booking.cancelMessage : '' }
+        })
+      )
     }
+  }
+
+  const handleCancelMessageChange = (id, value) => {
+    setBookings((bookings) =>
+      bookings.map((booking) => {
+        if (booking._id === id) return { ...booking, cancelMessage: value }
+        return booking
+      })
+    )
   }
 
   return (
     <CenterBox>
       <Paper elevation={2} className={classes.paper}>
         <Typography component='h1' variant='h5' className={classes.formTitle}>
-          Bookings
+          My Bookings
         </Typography>
         <StyledTabs value={tabStatus} onChange={handleChange}>
           <StyledTab value='ALL' label='ALL' index={0} />
@@ -157,18 +166,6 @@ export default function AdminBookings() {
           <StyledTab value='ACCEPTED' label='ACCEPTED' index={2} />
           <StyledTab value='CANCELLED' label='CANCELLED' index={3} />
         </StyledTabs>
-        {/* <BookingContainer>
-          {bookings.map((booking, index) => (
-            <Booking
-              key={booking._id}
-              index={index + 1}
-              hidden={tabStatus !== 'ALL' && booking.status !== tabStatus}
-              booking={booking}
-              handleStatusChange={handleStatusChange}
-            />
-          ))}
-        </BookingContainer> */}
-
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label='simple table'>
             <TableHead>
@@ -194,7 +191,7 @@ export default function AdminBookings() {
                       <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
                       <TableCell align='left'>{booking.status}</TableCell>
                       <TableCell align='left'>
-                        {booking.status === 'PENDING' && (
+                        {booking.status !== 'CANCELLED' && (
                           <Grid
                             container
                             spacing={1}
@@ -203,17 +200,26 @@ export default function AdminBookings() {
                             alignItems='center'
                           >
                             <Grid item>
+                              <TextField
+                                label='Reason'
+                                variant='outlined'
+                                value={bookings[idx].cancelMessage}
+                                onChange={(e) =>
+                                  handleCancelMessageChange(booking._id, e.target.value)
+                                }
+                                multiline
+                              />
                               <Button
-                                onClick={() => handleStatusChange(booking._id, 'ACCEPTED')}
+                                onClick={() => handleStatusChange(booking._id, 'CANCELLED')}
                                 width='50%'
                                 height='50%'
                                 variant='contained'
                                 color='primary'
                                 className={classes.submit}
-                                startIcon={<DoneIcon />}
+                                startIcon={<DeleteIcon />}
                                 style={{ borderRadius: 25 }}
                               >
-                                Accept
+                                Cancel
                               </Button>
                             </Grid>
                           </Grid>
@@ -228,6 +234,18 @@ export default function AdminBookings() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Link href='/add-booking'>
+          <Button
+            justify='center'
+            variant='contained'
+            color='primary'
+            className={classes.submit}
+            style={{ borderRadius: 25 }}
+          >
+            Add Booking
+          </Button>
+        </Link>
       </Paper>
     </CenterBox>
   )

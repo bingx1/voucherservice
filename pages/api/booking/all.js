@@ -4,12 +4,12 @@ import { getToken } from 'next-auth/jwt'
 const getAllBookingsHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
-    res.status(401).send({error: 'Admin access only'})
+    res.status(401).send({ error: 'Admin access only' })
     return
   }
   if (req.method === 'GET') {
     try {
-      var bookings = await Booking.find({})
+      var bookings = await Booking.find({}).populate('customer').populate('serviceType')
       res.status(201).send(bookings)
     } catch (error) {
       res.status(401).send({ error: 'Error retrieving all bookings' })
