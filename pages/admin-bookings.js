@@ -13,12 +13,19 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
-  Paper
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from '@material-ui/core'
 import CenterBox from '../components/center-box'
 import Booking from '../components/booking'
 import BookingContainer from '../components/booking-container'
 import { StyledTabs, StyledTab } from '../components/styled-tabs'
+import DoneIcon from '@material-ui/icons/Done'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -27,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#fafafa',
-    borderRadius: 20
+    borderRadius: 20,
+    height: '80vh'
     //   webkitBoxShadow:
     //     '0 2.8px 2.2px rgba(f, f, f, 0.034), 0 6.7px 5.3px rgba(f, f, f, 0.048), 0 12.5px 10px rgba(f, f, f, 0.06), 0 22.3px 17.9px rgba(f, f, f, 0.072), 0 41.8px 33.4px rgba(f, f, f, 0.086), 0 100px 80px rgba(f, f, f, 0.12)',
     //   mozBoxShadow:
@@ -144,12 +152,12 @@ export default function AdminBookings() {
           Bookings
         </Typography>
         <StyledTabs value={tabStatus} onChange={handleChange}>
-          <StyledTab value='ALL' label='ALL' />
-          <StyledTab value='PENDING' label='PENDING' />
-          <StyledTab value='ACCEPTED' label='ACCEPTED' />
-          <StyledTab value='CANCELLED' label='CANCELLED' />
+          <StyledTab value='ALL' label='ALL' index={0} />
+          <StyledTab value='PENDING' label='PENDING' index={1} />
+          <StyledTab value='ACCEPTED' label='ACCEPTED' index={2} />
+          <StyledTab value='CANCELLED' label='CANCELLED' index={3} />
         </StyledTabs>
-        <BookingContainer>
+        {/* <BookingContainer>
           {bookings.map((booking, index) => (
             <Booking
               key={booking._id}
@@ -159,7 +167,67 @@ export default function AdminBookings() {
               handleStatusChange={handleStatusChange}
             />
           ))}
-        </BookingContainer>
+        </BookingContainer> */}
+
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label='simple table'>
+            <TableHead>
+              <TableRow>
+                <TableCell align='left'>Service Type</TableCell>
+                <TableCell align='left'>Delivery Method</TableCell>
+                <TableCell align='left'>Date Time</TableCell>
+                <TableCell align='left'>Message</TableCell>
+                <TableCell align='left'>Status</TableCell>
+                <TableCell align='center'>Commands</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {bookings.map((booking, idx) => {
+                if (tabStatus === 'ALL' || booking.status === tabStatus) {
+                  return (
+                    <TableRow key={idx}>
+                      <TableCell align='left'>{booking.serviceType.name}</TableCell>
+                      <TableCell align='left'>{booking.deliveryMethod}</TableCell>
+                      <TableCell align='left'>
+                        {new Date(booking.dateTime).toLocaleString()}
+                      </TableCell>
+                      <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
+                      <TableCell align='left'>{booking.status}</TableCell>
+                      <TableCell align='left'>
+                        {booking.status === 'PENDING' && (
+                          <Grid
+                            container
+                            spacing={1}
+                            direction='column'
+                            justify='center'
+                            alignItems='center'
+                          >
+                            <Grid item>
+                              <Button
+                                onClick={() => handleStatusChange(booking._id, 'ACCEPTED')}
+                                width='50%'
+                                height='50%'
+                                variant='contained'
+                                color='primary'
+                                className={classes.submit}
+                                startIcon={<DoneIcon />}
+                                style={{ borderRadius: 25 }}
+                              >
+                                Accept
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                } else {
+                  return
+                }
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </CenterBox>
   )

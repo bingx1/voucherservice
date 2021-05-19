@@ -25,21 +25,29 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   divTitle: {
-    background: theme.palette.primary.dark,
+    background: theme.palette.primary.main,
     borderRadius: 40,
     padding: 20,
-    fontFamily: ['Roboto Mono', 'monospace'],
     transition: 'background 0.2s',
+    [theme.breakpoints.only('xs')]: {
+      borderRadius: 0
+    },
+
+    [theme.breakpoints.only('sm')]: {
+      maxWidth: '70%'
+    },
     '&:hover': {
-      background: theme.palette.primary.main,
-      transition: 'background 0.2s'
+      background: theme.palette.primary.light,
+      transition: 'background 0.2s',
+      cursor: 'default'
     }
   },
 
   title: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: ['Roboto Mono', 'monospace']
   },
 
   footer: {
@@ -64,7 +72,7 @@ export default function Home() {
     <div className={classes.container}>
       <main className={classes.main}>
         <div className={classes.divTitle}>
-          <Typography variant='h3' component='h2' className={classes.title}>
+          <Typography variant='h4' component='h2' className={classes.title}>
             Welcome to Voucher_Service!
           </Typography>
         </div>

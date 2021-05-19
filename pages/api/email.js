@@ -4,109 +4,117 @@ import { getToken } from 'next-auth/jwt'
 
 export default async function (req, res) {
   if (req.method == 'POST') {
-    // console.log('Process a request to send an email from API')
-    let nodemailer = require('nodemailer')
-    const transporter = nodemailer.createTransport({
-      port: 465,
-      host: 'smtp.gmail.com',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD
-      },
-      secure: true
-    })
+    try {
+      // console.log('Process a request to send an email from API')
+      let nodemailer = require('nodemailer')
+      const transporter = nodemailer.createTransport({
+        port: 465,
+        host: 'smtp.gmail.com',
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD
+        },
+        secure: true
+      })
 
-    const { customer, serviceType, deliveryMethod, dateTime, message, status } = req.body
+      const { customer, serviceType, deliveryMethod, dateTime, status } = req.body
 
-    const token = await getToken({ req, secret: process.env.SECRET })
+      var { message } = req.body
 
-    const user = await User.findOne({ _id: customer })
+      const token = await getToken({ req, secret: process.env.SECRET })
 
-    const type = await Service.findOne({ _id: serviceType })
+      const user = await User.findOne({ _id: customer })
 
-    const type_name = type.name
+      const type = await Service.findOne({ _id: serviceType })
 
-    const sender_email = user.email
+      const type_name = type.name
 
-    const phone_number = user.contact
+      const sender_email = user.email
 
-    const first_name = user.firstName
+      const phone_number = user.contact
 
-    const last_name = user.lastName
+      const first_name = user.firstName
 
-    message = message ? message : '-'
+      const last_name = user.lastName
 
-    // console.log(user)
+      // console.log(user)
 
-    var mailData
+      var mailData
 
-    if (!token.isAdmin) {
-      if (status === 'PENDING') {
-        mailData = {
-          from: process.env.EMAIL,
-          to: process.env.ADMIN_EMAIL,
-          subject: `New Voucher booking from ${first_name} ${last_name}`,
-          text: message + ' | Sent from: ' + sender_email,
-          html: `<div><strong> New voucher booking </strong></div>
-          <p>A new voucher booking has been received from ${first_name} ${last_name}. 
-          Please visit the admin dashboard to accept the booking.</p>
-          <div>Date: ${dateTime}</div> 
-          <div>Service type: ${type_name}</div>
-          <div>Location: ${deliveryMethod}<br></div>
-          <div><br><b>Client contact details</b></div>
-          <div>Name: ${first_name} ${last_name}</div>
-          <div>Phone number: ${phone_number}</div>
-          <div>Email address: ${sender_email}</div>
-          <div>Message: ${message}</div>
-          <p>Sent from: ${sender_email}</p>`
+      message = message ? message : '-'
+
+      if (!token.isAdmin) {
+        if (status === 'PENDING') {
+          mailData = {
+            from: process.env.EMAIL,
+            to: process.env.ADMIN_EMAIL,
+            subject: `New Voucher booking from ${first_name} ${last_name}`,
+            text: message + ' | Sent from: ' + sender_email,
+            html: `<div><strong> New voucher booking </strong></div>
+      <p>A new voucher booking has been received from ${first_name} ${last_name}. 
+      Please visit the admin dashboard to accept the booking.</p>
+      <div>Date: ${dateTime}</div> 
+      <div>Service type: ${type_name}</div>
+      <div>Location: ${deliveryMethod}<br></div>
+      <div>Message: ${message}</div>
+      <div><br><b>Client contact details</b></div>
+      <div>Name: ${first_name} ${last_name}</div>
+      <div>Phone number: ${phone_number}</div>
+      <div>Email address: ${sender_email}</div>
+      <p>Sent from: ${sender_email}</p>`
+          }
+        } else if (status === 'CANCELLED') {
+          mailData = {
+            from: process.env.EMAIL,
+            to: process.env.ADMIN_EMAIL,
+            subject: `Cancellation of voucher booking by ${first_name} ${last_name}`,
+            text: message + ' | Sent from: ' + sender_email,
+            html: `<div><strong> Cancellation of voucher booking </strong></div>
+      <p>A voucher booking has been cancelled by ${first_name} ${last_name}.</p>
+      <div>Date: ${dateTime}</div> 
+      <div>Service type: ${type_name}</div>
+      <div>Location: ${deliveryMethod}<br></div>
+      <div>Cancellation Message: ${message}</div>
+      <div><br><b>Client contact details</b></div>
+      <div>Name: ${first_name} ${last_name}</div>
+      <div>Phone number: ${phone_number}</div>
+      <div>Email address: ${sender_email}</div>
+      <p>Sent from: ${sender_email}</p>`
+          }
         }
-      } else if (status === 'CANCELLED') {
-        mailData = {
-          from: process.env.EMAIL,
-          to: process.env.ADMIN_EMAIL,
-          subject: `Cancellation of voucher booking by ${first_name} ${last_name}`,
-          text: message + ' | Sent from: ' + sender_email,
-          html: `<div><strong> Cancellation of voucher booking </strong></div>
-          <p>A voucher booking has been cancelled by ${first_name} ${last_name}.</p>
-          <div>Date: ${dateTime}</div> 
-          <div>Service type: ${type_name}</div>
-          <div>Location: ${deliveryMethod}<br></div>
-          <div><br><b>Client contact details</b></div>
-          <div>Name: ${first_name} ${last_name}</div>
-          <div>Phone number: ${phone_number}</div>
-          <div>Email address: ${sender_email}</div>
-          <div>Message: ${message}</div>
-          <p>Sent from: ${sender_email}</p>`
+      } else {
+        if (status === 'ACCEPTED') {
+          mailData = {
+            from: process.env.EMAIL,
+            to: sender_email,
+            subject: `Voucher booking confirmed for ${first_name} ${last_name}`,
+            text: message + ' | Sent from: ' + process.env.EMAIL,
+            html: `<div><strong> New voucher booking </strong></div>
+      <p>Your voucher booking has been confirmed by the administrator.  
+      Please see below for booking details.</p>
+      <div>Date: ${dateTime}</div> 
+      <div>Service type: ${type_name}</div>
+      <div>Location: ${deliveryMethod}<br></div>
+      <div>Message: ${message}</div>
+      <div><br><b>Client contact details</b></div>
+      <div>Name: ${first_name} ${last_name}</div>
+      <div>Phone number: ${phone_number}</div>
+      <div>Email address: ${sender_email}</div>
+      <p>Sent from: ${process.env.EMAIL}</p>`
+          }
         }
       }
-    } else {
-      if (status === 'ACCEPTED') {
-        mailData = {
-          from: process.env.EMAIL,
-          to: sender_email,
-          subject: `Voucher booking confirmed for ${first_name} ${last_name}`,
-          text: message + ' | Sent from: ' + process.env.EMAIL,
-          html: `<div><strong> New voucher booking </strong></div>
-          <p>Your voucher booking has been confirmed by the administrator.  
-          Please see below for booking details.</p>
-          <div>Date: ${dateTime}</div> 
-          <div>Service type: ${type_name}</div>
-          <div>Location: ${deliveryMethod}<br></div>
-          <div><br><b>Client contact details</b></div>
-          <div>Name: ${first_name} ${last_name}</div>
-          <div>Phone number: ${phone_number}</div>
-          <div>Email address: ${sender_email}</div>
-          <p>Sent from: ${process.env.EMAIL}</p>`
-        }
-      }
+
+      transporter.sendMail(mailData, function (err, info) {
+        if (err) console.log(err)
+        else console.log(info)
+      })
+
+      res.status(200).send('Success')
+    } catch (error) {
+      console.log(error)
+      res.status(422).send({ error: 'Error in processing email' })
     }
-
-    transporter.sendMail(mailData, function (err, info) {
-      if (err) console.log(err)
-      else console.log(info)
-    })
-
-    res.status(200).send('Success')
   } else {
     res.status(422).send({ error: 'Request method not supported' })
   }

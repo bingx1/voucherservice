@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     [theme.breakpoints.only('xs')]: {
       justifyContent: 'center',
-      alignItems: 'flex-end'
+      alignItems: 'center'
     }
   },
 
@@ -39,10 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
   nav: {
     display: 'flex',
-    justifyContent: 'space-around',
-    [theme.breakpoints.only('xs')]: {
-      display: 'none'
-    }
+    justifyContent: 'space-around'
   },
   icon: {
     marginLeft: 10,

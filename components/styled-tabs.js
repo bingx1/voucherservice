@@ -13,7 +13,17 @@ export const StyledTabs = withStyles((theme) => ({
       backgroundColor: theme.palette.secondary.main
     }
   }
-}))((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />)
+}))((props) => (
+  <Tabs
+    {...props}
+    TabIndicatorProps={{ children: <span /> }}
+    variant='scrollable'
+    scrollButtons='on'
+    style={{
+      maxWidth: '100%'
+    }}
+  />
+))
 
 export const StyledTab = withStyles((theme) => ({
   root: {
@@ -24,6 +34,15 @@ export const StyledTab = withStyles((theme) => ({
     marginRight: theme.spacing(1),
     '&:focus': {
       opacity: 1
-    }
+    },
+    [theme.breakpoints.only('xs')]: {}
   }
-}))((props) => <Tab disableRipple {...props} />)
+}))((props) => (
+  <Tab
+    disableRipple
+    {...props}
+    index={undefined}
+    id={`scrollable-auto-tab-${props.index}`}
+    aria-controls={`scrollable-auto-tabpanel-${props.index}`}
+  />
+))
