@@ -15,16 +15,16 @@ const signupHandler = async (req, res) => {
         res.status(201).send(user)
       } catch (error) {
         if (error.code == 11000) {
-          res.status(401).send({ error: 'An account with this email already exists' })
+          res.status(401).send({ error: 'An account with this email already exists.' })
         } else {
-          res.status(422).send({error: 'The password needs to be at least 8 characters'})
+          res.status(422).send({ error: 'The password needs to be at least 8 characters.' })
         }
       }
     } else {
-      res.status(422).send({ error: 'All required fields must be filled' })
+      res.status(422).send({ error: 'All required fields must be filled.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }
 

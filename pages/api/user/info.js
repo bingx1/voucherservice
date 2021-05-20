@@ -4,7 +4,7 @@ import User from '../../../db/user'
 const infoHandler = async (req, res) => {
   const session = await getSession({ req })
   if (!session) {
-    res.status(401).send({ message: 'Incorrect or outdated session' })
+    res.status(401).send({ message: 'Incorrect or outdated session.' })
     return
   }
 
@@ -47,7 +47,7 @@ const infoHandler = async (req, res) => {
     } else if (req.method === 'GET') {
       res.status(201).send(user)
     } else {
-      res.status(422).send({ error: 'Request method not supported' })
+      res.status(422).send({ error: 'Request method not supported.' })
     }
   } else {
     res.status(401).send({ error: 'Error retrieving/updating user information.' })

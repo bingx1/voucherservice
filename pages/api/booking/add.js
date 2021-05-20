@@ -6,14 +6,14 @@ import User from '../../../db/user'
 const addBookingHandler = async (req, res) => {
   const session = await getSession({ req })
   if (!session) {
-    res.status(401).send({ message: 'Incorrect or outdated session' })
+    res.status(401).send({ message: 'Incorrect or outdated session.' })
     return
   }
   const sessionEmail = session.user.email
   const token = await getToken({ req, secret: process.env.SECRET })
 
   if (!token || token.email !== sessionEmail) {
-    res.status(401).send({ error: 'Must be logged-in user to access data' })
+    res.status(401).send({ error: 'Must be logged-in user to access data.' })
     return
   }
 
@@ -39,13 +39,13 @@ const addBookingHandler = async (req, res) => {
       } catch (error) {
         console.log(error)
 
-        res.status(401).send({ error: 'Error creating voucher booking' })
+        res.status(401).send({ error: 'Error creating voucher booking.' })
       }
     } else {
-      res.status(422).send({ error: 'Field must be filled' })
+      res.status(422).send({ error: 'All required fields must be filled.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }
 

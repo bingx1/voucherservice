@@ -118,15 +118,19 @@ export default function AdminBookings() {
     var payload
 
     if (response.status === 201) {
+      const date = new Date(booking.dateTime)
+      const dateTimeString = getBookingDate(date)
+
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) {
             booking.status = status
             payload = {
+              id: booking._id,
               customer: booking.customer._id,
               serviceType: booking.serviceType._id,
               deliveryMethod: booking.deliveryMethod,
-              dateTime: new Date(booking.dateTime).toLocaleString(),
+              dateTime: dateTimeString,
               message: booking.message,
               status
             }
@@ -143,6 +147,25 @@ export default function AdminBookings() {
         body: JSON.stringify(payload)
       })
     }
+  }
+
+  const appendLeadingZero = (number) => {
+    return number <= 9 ? '0' + number : number
+  }
+
+  const getBookingDate = (booking) => {
+    const date = new Date(booking.date)
+    return (
+      date.getFullYear() +
+      '/' +
+      appendLeadingZero(date.getMonth() + 1) +
+      '/' +
+      appendLeadingZero(date.getDate()) +
+      ' ' +
+      appendLeadingZero(date.getHours()) +
+      ':' +
+      appendLeadingZero(date.getMinutes())
+    )
   }
 
   return (
@@ -174,6 +197,7 @@ export default function AdminBookings() {
             <TableHead>
               <TableRow>
                 <TableCell align='left'>Service Type</TableCell>
+                <TableCell align='left'>Customer</TableCell>
                 <TableCell align='left'>Delivery Method</TableCell>
                 <TableCell align='left'>Date Time</TableCell>
                 <TableCell align='left'>Message</TableCell>
@@ -187,10 +211,11 @@ export default function AdminBookings() {
                   return (
                     <TableRow key={idx}>
                       <TableCell align='left'>{booking.serviceType.name}</TableCell>
-                      <TableCell align='left'>{booking.deliveryMethod}</TableCell>
                       <TableCell align='left'>
-                        {new Date(booking.dateTime).toLocaleString()}
+                        {booking.customer.firstName + ' ' + booking.customer.lastName}
                       </TableCell>
+                      <TableCell align='left'>{booking.deliveryMethod}</TableCell>
+                      <TableCell align='left'>{getBookingDate(booking)}</TableCell>
                       <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
                       <TableCell align='left'>{booking.status}</TableCell>
                       <TableCell align='left'>

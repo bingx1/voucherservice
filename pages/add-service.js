@@ -92,8 +92,9 @@ export default function AddService() {
       const service = await response.json()
       setState((state) => ({
         ...state,
+        name: '',
         error: false,
-        errorMessage: 'Successfully added the ' + service.name + ' service'
+        errorMessage: 'Successfully added the ' + service.name + ' service.'
       }))
     } else {
       const error = (await response.json()).error

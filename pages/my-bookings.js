@@ -26,7 +26,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-import DeleteIcon from '@material-ui/icons/Delete'
+import ClearIcon from '@material-ui/icons/Clear'
 import DoneIcon from '@material-ui/icons/Done'
 
 const useStyles = makeStyles((theme) => ({
@@ -121,10 +121,11 @@ export default function MyBookings() {
       var booking = bookings.find((booking) => booking._id === id)
 
       const payload = {
+        id: booking._id,
         customer: booking.customer._id,
         serviceType: booking.serviceType._id,
         deliveryMethod: booking.deliveryMethod,
-        dateTime: new Date(booking.dateTime).toLocaleString(),
+        dateTime: getBookingDate(booking),
         message: status === 'CANCELLED' ? booking.cancelMessage : booking.message,
         status: status
       }
@@ -151,6 +152,25 @@ export default function MyBookings() {
         if (booking._id === id) return { ...booking, cancelMessage: value }
         return booking
       })
+    )
+  }
+
+  const appendLeadingZero = (number) => {
+    return number <= 9 ? '0' + number : number
+  }
+
+  const getBookingDate = (booking) => {
+    const date = new Date(booking.dateTime)
+    return (
+      date.getFullYear() +
+      '/' +
+      appendLeadingZero(date.getMonth() + 1) +
+      '/' +
+      appendLeadingZero(date.getDate()) +
+      ' ' +
+      appendLeadingZero(date.getHours()) +
+      ':' +
+      appendLeadingZero(date.getMinutes())
     )
   }
 
@@ -185,9 +205,7 @@ export default function MyBookings() {
                     <TableRow key={idx}>
                       <TableCell align='left'>{booking.serviceType.name}</TableCell>
                       <TableCell align='left'>{booking.deliveryMethod}</TableCell>
-                      <TableCell align='left'>
-                        {new Date(booking.dateTime).toLocaleString()}
-                      </TableCell>
+                      <TableCell align='left'>{getBookingDate(booking)}</TableCell>
                       <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
                       <TableCell align='left'>{booking.status}</TableCell>
                       <TableCell align='left'>
@@ -216,7 +234,7 @@ export default function MyBookings() {
                                 variant='contained'
                                 color='primary'
                                 className={classes.submit}
-                                startIcon={<DeleteIcon />}
+                                startIcon={<ClearIcon />}
                                 style={{ borderRadius: 25 }}
                               >
                                 Cancel

@@ -78,12 +78,16 @@ export default function LogIn() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const response = await signIn('credentials', { email: state.email, password: state.password, redirect: false })
+    const response = await signIn('credentials', {
+      email: state.email,
+      password: state.password,
+      redirect: false
+    })
 
     if (response.status === 200) {
       window.location.href = '/'
     } else {
-      setState((state) => ({ ...state, error: 'The Email or Password was Incorrect' }))
+      setState((state) => ({ ...state, error: 'The email or password was incorrect' }))
     }
   }
 

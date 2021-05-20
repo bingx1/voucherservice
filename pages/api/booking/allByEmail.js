@@ -7,7 +7,7 @@ import { getSession } from 'next-auth/client'
 const getAllBookingsByEmailHandler = async (req, res) => {
   const session = await getSession({ req })
   if (!session) {
-    res.status(401).send({ message: 'Incorrect or outdated session' })
+    res.status(401).send({ message: 'Incorrect or outdated session.' })
     return
   }
 
@@ -16,7 +16,7 @@ const getAllBookingsByEmailHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
 
   if (!token || token.email !== sessionEmail) {
-    res.status(401).send({ error: 'Must be logged-in user to access data' })
+    res.status(401).send({ error: 'Must be logged-in user to access data.' })
     return
   }
 
@@ -38,10 +38,10 @@ const getAllBookingsByEmailHandler = async (req, res) => {
 
       res.status(201).send(bookings)
     } catch (error) {
-      res.status(401).send({ error: 'Error retrieving all bookings' })
+      res.status(401).send({ error: 'Error retrieving all bookings.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }
 

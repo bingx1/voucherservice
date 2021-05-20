@@ -69,18 +69,21 @@ const useStyles = makeStyles((theme) => ({
 export default function AddService() {
   const classes = useStyles()
   const [services, setServices] = useState([])
-  const [selectedDate, handleDateChange] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(Date.now())
 
   const [state, setState] = useState({
     serviceName: '',
     deliveryMethod: 'DELIVERY',
     message: '',
-    errorMessage: '',
-    age: ''
+    errorMessage: ''
   })
 
   const handleChange = (e) => {
     setState((state) => ({ ...state, [e.target.name]: e.target.value }))
+  }
+
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value)
   }
 
   async function handleSubmit(e) {
@@ -125,17 +128,27 @@ export default function AddService() {
         })
 
         if (response.status === 201) {
+          const bookingId = (await response.json())._id
+
+          const date = new Date(selectedDate)
+          const dateTimeString = getDateString(date)
+
           const email_response = await fetch('/api/email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', accept: 'application/json' },
-            body: JSON.stringify({ ...payload, dateTime: new Date(selectedDate).toLocaleString() })
+            body: JSON.stringify({ ...payload, dateTime: dateTimeString, id: bookingId })
           })
 
           setState((state) => ({
             ...state,
+            serviceName: '',
+            deliveryMethod: 'DELIVERY',
+            message: '',
             error: false,
-            errorMessage: 'Booking successfully added'
+            errorMessage: 'Booking successfully added.'
           }))
+
+          setSelectedDate(Date.now())
         } else {
           const error = (await response.json()).error
           setState((state) => ({ ...state, error: true, errorMessage: error }))
@@ -144,8 +157,26 @@ export default function AddService() {
         signOut()
       }
     } else {
-      setState((state) => ({ ...state, error: true, errorMessage: 'Service is required' }))
+      setState((state) => ({ ...state, error: true, errorMessage: 'Service is required.' }))
     }
+  }
+
+  const appendLeadingZero = (number) => {
+    return number <= 9 ? '0' + number : number
+  }
+
+  const getDateString = (date) => {
+    return (
+      date.getFullYear() +
+      '/' +
+      appendLeadingZero(date.getMonth() + 1) +
+      '/' +
+      appendLeadingZero(date.getDate()) +
+      ' ' +
+      appendLeadingZero(date.getHours()) +
+      ':' +
+      appendLeadingZero(date.getMinutes())
+    )
   }
 
   useEffect(() => {
@@ -243,18 +274,35 @@ export default function AddService() {
           </Grid>
         </Grid>
         <FormHelperText error={state.error}>{state.errorMessage}</FormHelperText>
-        <Grid container justify='center'>
-          <Button
-            width='50%'
-            height='50%'
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-            style={{ borderRadius: 25 }}
-            onClick={handleSubmit}
-          >
-            Add Booking
-          </Button>
+        <Grid container justify='center' alignItems='center' direction='column' spacing={1}>
+          <Grid item>
+            <Button
+              width='50%'
+              height='50%'
+              variant='contained'
+              color='primary'
+              className={classes.submit}
+              style={{ borderRadius: 25 }}
+              onClick={handleSubmit}
+            >
+              Add Booking
+            </Button>
+          </Grid>
+          <Grid item>
+            <Link href='/my-bookings'>
+              <Button
+                width='50%'
+                height='50%'
+                justify='center'
+                variant='contained'
+                color='primary'
+                className={classes.submit}
+                style={{ borderRadius: 25 }}
+              >
+                View All Bookings
+              </Button>
+            </Link>
+          </Grid>
         </Grid>
       </Paper>
     </CenterForm>
