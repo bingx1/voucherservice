@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Copyright from '../components/copyright'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,6 +24,32 @@ const useStyles = makeStyles((theme) => ({
       minHeight: `calc(100vh - ${theme.mixins.toolbar['@media (min-width:600px)'].minHeight}px)`
     }
   },
+  divTitle: {
+    background: theme.palette.primary.main,
+    borderRadius: 40,
+    padding: 20,
+    transition: 'background 0.2s',
+    [theme.breakpoints.only('xs')]: {
+      borderRadius: 0
+    },
+
+    [theme.breakpoints.only('sm')]: {
+      maxWidth: '70%'
+    },
+    '&:hover': {
+      background: theme.palette.primary.light,
+      transition: 'background 0.2s',
+      cursor: 'default'
+    }
+  },
+
+  title: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: ['Roboto Mono', 'monospace']
+  },
+
   footer: {
     width: '100%',
     height: '100px',
@@ -44,7 +70,13 @@ export default function Home() {
 
   return (
     <div className={classes.container}>
-      <main className={classes.main}></main>
+      <main className={classes.main}>
+        <div className={classes.divTitle}>
+          <Typography variant='h4' component='h2' className={classes.title}>
+            Welcome to Voucher_Service!
+          </Typography>
+        </div>
+      </main>
       <footer className={classes.footer}>
         <Copyright />
       </footer>

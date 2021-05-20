@@ -22,11 +22,17 @@ const getAllBookingsByEmailHandler = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      var user = await User.findOne({ email: sessionEmail }).populate({
-        path: 'bookings',
-        model: 'bookings',
-        populate: { path: 'serviceType', model: 'services' }
-      })
+      var user = await User.findOne({ email: sessionEmail })
+        .populate({
+          path: 'bookings',
+          model: 'bookings',
+          populate: { path: 'serviceType', model: 'services' }
+        })
+        .populate({
+          path: 'bookings',
+          model: 'bookings',
+          populate: { path: 'customer', model: 'users' }
+        })
 
       var bookings = user.bookings
 

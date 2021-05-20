@@ -64,7 +64,7 @@ export default function Booking({ index, hidden, booking, handleStatusChange }) 
                 <li>Customer: {booking.customer.firstName + ' ' + booking.customer.lastName}</li>
                 <li>Service Type: {booking.serviceType.name}</li>
                 <li>Date: {booking.dateTime}</li>
-                <li>Message: {booking.message ? booking.message : 'N/A'}</li>
+                <li>Message: {booking.message ? booking.message : '-'}</li>
                 <li>Status: {booking.status}</li>
               </ul>
             </div>

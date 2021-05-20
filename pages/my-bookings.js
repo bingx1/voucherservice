@@ -36,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#fafafa',
-    borderRadius: 20
+    borderRadius: 20,
+    height: '80vh'
+
     //   webkitBoxShadow:
     //     '0 2.8px 2.2px rgba(f, f, f, 0.034), 0 6.7px 5.3px rgba(f, f, f, 0.048), 0 12.5px 10px rgba(f, f, f, 0.06), 0 22.3px 17.9px rgba(f, f, f, 0.072), 0 41.8px 33.4px rgba(f, f, f, 0.086), 0 100px 80px rgba(f, f, f, 0.12)',
     //   mozBoxShadow:
@@ -62,8 +64,7 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     backgroundColor: '#6200EE',
-    fontFamily: ['Roboto Mono', 'monospace'],
-    width: 125
+    fontFamily: ['Roboto Mono', 'monospace']
   },
   link: {
     '&:hover': {
@@ -76,6 +77,7 @@ export default function MyBookings() {
   const classes = useStyles()
 
   const [bookings, setBookings] = useState([])
+  const [tabStatus, setTabStatus] = useState('ALL')
 
   useEffect(() => {
     async function getAllUserBookings() {
@@ -94,7 +96,7 @@ export default function MyBookings() {
     }
 
     getAllUserBookings().then((bookings) => {
-      console.log('Retrieved bookings:', bookings)
+      // console.log('Retrieved bookings:', bookings)
       setBookings(bookings)
     })
   }, [])
@@ -116,14 +118,40 @@ export default function MyBookings() {
     })
 
     if (response.status === 201) {
+      var booking = bookings.find((booking) => booking._id === id)
+
+      const payload = {
+        customer: booking.customer._id,
+        serviceType: booking.serviceType._id,
+        deliveryMethod: booking.deliveryMethod,
+        dateTime: new Date(booking.dateTime).toLocaleString(),
+        message: status === 'CANCELLED' ? booking.cancelMessage : booking.message,
+        status: status
+      }
+
+      const email_response = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) booking.status = status
 
-          return booking
+          return { ...booking, cancelMessage: booking.cancelMessage ? booking.cancelMessage : '' }
         })
       )
     }
+  }
+
+  const handleCancelMessageChange = (id, value) => {
+    setBookings((bookings) =>
+      bookings.map((booking) => {
+        if (booking._id === id) return { ...booking, cancelMessage: value }
+        return booking
+      })
+    )
   }
 
   return (
@@ -132,7 +160,12 @@ export default function MyBookings() {
         <Typography component='h1' variant='h5' className={classes.formTitle}>
           My Bookings
         </Typography>
-
+        <StyledTabs value={tabStatus} onChange={handleChange}>
+          <StyledTab value='ALL' label='ALL' index={0} />
+          <StyledTab value='PENDING' label='PENDING' index={1} />
+          <StyledTab value='ACCEPTED' label='ACCEPTED' index={2} />
+          <StyledTab value='CANCELLED' label='CANCELLED' index={3} />
+        </StyledTabs>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label='simple table'>
             <TableHead>
@@ -146,49 +179,64 @@ export default function MyBookings() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {bookings.map((booking, idx) => (
-                <TableRow key={idx}>
-                  <TableCell align='left'>{booking.serviceType.name}</TableCell>
-                  <TableCell align='left'>{booking.deliveryMethod}</TableCell>
-                  <TableCell align='left'>{new Date(booking.dateTime).toLocaleString()}</TableCell>
-                  <TableCell align='left'>{booking.message ? booking.message : 'N/A'}</TableCell>
-                  <TableCell align='left'>{booking.status}</TableCell>
-                  <TableCell align='left'>
-                    {booking.status !== 'CANCELLED' && (
-                      <Grid
-                        container
-                        spacing={1}
-                        direction='column'
-                        justify='center'
-                        alignItems='center'
-                      >
-                        <Grid item>
-                          <Button
-                            onClick={() => handleStatusChange(booking._id, 'CANCELLED')}
-                            width='50%'
-                            height='50%'
-                            variant='contained'
-                            color='primary'
-                            className={classes.submit}
-                            startIcon={<DeleteIcon />}
-                            style={{ borderRadius: 25 }}
+              {bookings.map((booking, idx) => {
+                if (tabStatus === 'ALL' || booking.status === tabStatus) {
+                  return (
+                    <TableRow key={idx}>
+                      <TableCell align='left'>{booking.serviceType.name}</TableCell>
+                      <TableCell align='left'>{booking.deliveryMethod}</TableCell>
+                      <TableCell align='left'>
+                        {new Date(booking.dateTime).toLocaleString()}
+                      </TableCell>
+                      <TableCell align='left'>{booking.message ? booking.message : '-'}</TableCell>
+                      <TableCell align='left'>{booking.status}</TableCell>
+                      <TableCell align='left'>
+                        {booking.status !== 'CANCELLED' && (
+                          <Grid
+                            container
+                            spacing={1}
+                            direction='column'
+                            justify='center'
+                            alignItems='center'
                           >
-                            Cancel
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+                            <Grid item>
+                              <TextField
+                                label='Reason'
+                                variant='outlined'
+                                value={bookings[idx].cancelMessage}
+                                onChange={(e) =>
+                                  handleCancelMessageChange(booking._id, e.target.value)
+                                }
+                                multiline
+                              />
+                              <Button
+                                onClick={() => handleStatusChange(booking._id, 'CANCELLED')}
+                                width='50%'
+                                height='50%'
+                                variant='contained'
+                                color='primary'
+                                className={classes.submit}
+                                startIcon={<DeleteIcon />}
+                                style={{ borderRadius: 25 }}
+                              >
+                                Cancel
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                } else {
+                  return
+                }
+              })}
             </TableBody>
           </Table>
         </TableContainer>
 
         <Link href='/add-booking'>
           <Button
-            width='50%'
-            height='50%'
             justify='center'
             variant='contained'
             color='primary'
