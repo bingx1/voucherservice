@@ -79,7 +79,8 @@ const EditInfo = () => {
   }
 
   const handleListItemClick = (e) => {
-    setState((state) => ({ ...state, menuItem: e.target.innerText, error: '', success: '' }))
+    console.log(e.target.innerText)
+    setState((state) => ({ ...state, menuItem: e.target.innerText.trim(), error: '', success: '' }))
   }
 
   async function handleSave() {

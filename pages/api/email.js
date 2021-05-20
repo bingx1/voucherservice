@@ -17,7 +17,7 @@ export default async function (req, res) {
         secure: true
       })
 
-      const { customer, serviceType, deliveryMethod, dateTime, status } = req.body
+      const { id, customer, serviceType, deliveryMethod, dateTime, status } = req.body
 
       var { message } = req.body
 
@@ -48,7 +48,7 @@ export default async function (req, res) {
           mailData = {
             from: process.env.EMAIL,
             to: process.env.ADMIN_EMAIL,
-            subject: `New Voucher booking from ${first_name} ${last_name}`,
+            subject: `New voucher booking by ${first_name} ${last_name} (Booking ID: ${id})`,
             text: message + ' | Sent from: ' + sender_email,
             html: `<div><strong> New voucher booking </strong></div>
       <p>A new voucher booking has been received from ${first_name} ${last_name}. 
@@ -67,7 +67,7 @@ export default async function (req, res) {
           mailData = {
             from: process.env.EMAIL,
             to: process.env.ADMIN_EMAIL,
-            subject: `Cancellation of voucher booking by ${first_name} ${last_name}`,
+            subject: `Cancellation of voucher booking by ${first_name} ${last_name} (Booking ID: ${id})`,
             text: message + ' | Sent from: ' + sender_email,
             html: `<div><strong> Cancellation of voucher booking </strong></div>
       <p>A voucher booking has been cancelled by ${first_name} ${last_name}.</p>
@@ -87,7 +87,7 @@ export default async function (req, res) {
           mailData = {
             from: process.env.EMAIL,
             to: sender_email,
-            subject: `Voucher booking confirmed for ${first_name} ${last_name}`,
+            subject: `Voucher booking confirmed (Booking ID: ${id})`,
             text: message + ' | Sent from: ' + process.env.EMAIL,
             html: `<div><strong> New voucher booking </strong></div>
       <p>Your voucher booking has been confirmed by the administrator.  
@@ -113,9 +113,9 @@ export default async function (req, res) {
       res.status(200).send('Success')
     } catch (error) {
       console.log(error)
-      res.status(422).send({ error: 'Error in processing email' })
+      res.status(422).send({ error: 'Error while processing email.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }

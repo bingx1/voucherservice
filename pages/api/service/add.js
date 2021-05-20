@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt'
 const addServiceHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
-    res.status(401).send({error: 'Admin access only'})
+    res.status(401).send({ error: 'Admin access only.' })
     return
   }
   if (req.method === 'POST') {
@@ -18,13 +18,13 @@ const addServiceHandler = async (req, res) => {
         await service.save()
         res.status(201).send(service)
       } catch (error) {
-        res.status(401).send({ error: 'This service already exists' })
+        res.status(401).send({ error: 'This service already exists.' })
       }
     } else {
-      res.status(422).send({ error: 'Field must be filled' })
+      res.status(422).send({ error: 'Field must be filled.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }
 

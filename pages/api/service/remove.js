@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt'
 const removeServiceHandler = async (req, res) => {
   const token = await getToken({ req, secret: process.env.SECRET })
   if (!token || !token.isAdmin) {
-    res.status(401).send({ error: 'Admin access only' })
+    res.status(401).send({ error: 'Admin access only.' })
     return
   }
   if (req.method === 'DELETE') {
@@ -15,13 +15,13 @@ const removeServiceHandler = async (req, res) => {
         var service = await Service.deleteOne({ name })
         res.status(201).send(service)
       } catch (error) {
-        res.status(401).send({ error: 'This service does not exist' })
+        res.status(401).send({ error: 'This service does not exist.' })
       }
     } else {
-      res.status(422).send({ error: 'Field must be filled' })
+      res.status(422).send({ error: 'Field must be filled.' })
     }
   } else {
-    res.status(422).send({ error: 'Request method not supported' })
+    res.status(422).send({ error: 'Request method not supported.' })
   }
 }
 
