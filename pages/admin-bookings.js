@@ -154,7 +154,7 @@ export default function AdminBookings() {
   }
 
   const getBookingDate = (booking) => {
-    const date = new Date(booking.date)
+    const date = new Date(booking.dateTime)
     return (
       date.getFullYear() +
       '/' +
