@@ -227,6 +227,8 @@ export default function MyBookings() {
                                 }
                                 multiline
                               />
+                            </Grid>
+                            <Grid item>
                               <Button
                                 onClick={() => handleStatusChange(booking._id, 'CANCELLED')}
                                 width='50%'
