@@ -118,9 +118,6 @@ export default function AdminBookings() {
     var payload
 
     if (response.status === 201) {
-      const date = new Date(booking.dateTime)
-      const dateTimeString = getBookingDate(date)
-
       setBookings((bookings) =>
         bookings.map((booking) => {
           if (booking._id === id) {
@@ -130,7 +127,7 @@ export default function AdminBookings() {
               customer: booking.customer._id,
               serviceType: booking.serviceType._id,
               deliveryMethod: booking.deliveryMethod,
-              dateTime: dateTimeString,
+              dateTime: getBookingDate(new Date(booking.dateTime)),
               message: booking.message,
               status
             }
